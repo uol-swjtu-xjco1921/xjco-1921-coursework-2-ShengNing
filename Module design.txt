@@ -1,0 +1,23 @@
+	For my Coursework 2 of Programming Project, these modules will be implemented: routeDealing.c, mapRead.c, mapEdit.c, routeInit.c, routeSearch.c, routeShown.c, errReport.c.
+
+- routeDealing.c: 
+	This module is regarded as the main module of this project. It combined the other modules in the project to achieve the demands of cwk2. The details of usages will be written in “readme.txt”. Meanwhile the errors that occur will call errReport.c and return relevant value.
+
+- mapRead.c:
+	This module read the data of input map, by the file path read from routeDealing.c. Consequently, the data will be stored in a structs and return to routeDealing.c for the next operation. The errors that occur will call errReport.c and return relevant value.
+
+- mapEdit.c:
+	This module allowed the edit operations which input from routeDealing.c for the map data, which include adding new routes and adding or changing road attributes like speed limits. Finally, the edited data will be returned to routeDealing.c. The errors that occur will call errReport.c and return relevant value.
+
+- routeInit.c:
+	This module will set the weight of point and the value of edges weight based on task. The weight of point will be set at 0 or 1, which means whether the point is necessary to visit. When finding the shortest route, the edges weight will be set as edge route length, whereas the edges weight will be set as Fastest transit time of route when finding the quickest route.
+
+- routeSearch.c:
+	This module will be applied “Dijkstra” arithmetic to search the “shortest route” with weighted point based on edges weight, which will be set in the routeInit.c. Finally, the route will be returned to routeDealing.c. The errors that occur will call errReport.c and return relevant value.
+
+- routeShown.c:
+	This module will show the route form routeDealing.c on the map by applying “SDL”. Designed UI and contact function will be applied in the final version. Meanwhile the errors that occur will call errReport.c and return relevant value.
+
+- errReport.c:
+	This module contains the errors which are possible to exist. When this module is called, the describe string of error will be output by the input error value.
+
