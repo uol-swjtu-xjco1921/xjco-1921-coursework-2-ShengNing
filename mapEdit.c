@@ -1,6 +1,26 @@
 #include "mapEdit.h"
 
-void editOperation(struct link **edge, int *head)
+void addLink(struct link **linkList, struct count *countList, struct link addedLink)
+{
+
+}
+
+void addNode(struct node **nodeList, struct count *countList, struct node addedNode)
+{
+
+}
+
+void addWay(struct way **wayList, struct count *countList, struct way addedWay)
+{
+
+}
+
+void addGeom(struct geom **geomList, struct count *countList, struct geom addedGeom)
+{
+
+}
+
+void addEdge(struct edge **edgeList, struct count *countList, struct link addedLink)
 {
 
 }
