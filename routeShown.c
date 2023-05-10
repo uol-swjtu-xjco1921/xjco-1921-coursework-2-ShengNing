@@ -1,5 +1,6 @@
-//
-// Created by jieee on 5/8/23.
-//
-
 #include "routeShown.h"
+
+void routeShown(struct link **edge, int *head)
+{
+
+}

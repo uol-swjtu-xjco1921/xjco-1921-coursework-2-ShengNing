@@ -1,5 +1,6 @@
-//
-// Created by jieee on 5/8/23.
-//
-
 #include "mapEdit.h"
+
+void editOperation(struct link **edge, int *head)
+{
+
+}

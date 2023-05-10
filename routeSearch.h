@@ -1,8 +1,5 @@
-//
-// Created by jieee on 5/8/23.
-//
+#include <stdio.h>
 
-#ifndef XJCO_1921_COURSEWORK_2_SHENGNING_ROUTESEARCH_H
-#define XJCO_1921_COURSEWORK_2_SHENGNING_ROUTESEARCH_H
+#include "mapRead.h"
 
-#endif //XJCO_1921_COURSEWORK_2_SHENGNING_ROUTESEARCH_H
+void routeSearch(struct link **edge, int *head);

@@ -1,8 +1,13 @@
-//
-// Created by jieee on 5/8/23.
-//
+#include <stdio.h>
 
-#ifndef XJCO_1921_COURSEWORK_2_SHENGNING_MAPREAD_H
-#define XJCO_1921_COURSEWORK_2_SHENGNING_MAPREAD_H
+struct link
+{
+    int id;
+    int to;
+    int nxt;
+    int way;
+    double length, veg, arch, land;
+    char *POI;
+};
 
-#endif //XJCO_1921_COURSEWORK_2_SHENGNING_MAPREAD_H
+void readFile(char *filename, struct link **edge, int *head);
