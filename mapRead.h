@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "errReport.h"
 
 struct link
 {
@@ -10,4 +11,11 @@ struct link
     char *POI;
 };
 
-void readFile(char *filename, struct link **edge, int *head);
+struct node
+{
+    int id;
+    double lat, lon;
+};
+
+
+int readFile(char *filename, struct link **edge, int **head);
