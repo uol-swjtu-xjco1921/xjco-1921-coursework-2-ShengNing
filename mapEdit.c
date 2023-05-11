@@ -20,7 +20,7 @@ void addGeom(struct geom **geomList, struct count *countList, struct geom addedG
 
 }
 
-void addEdge(struct edge **edgeList, int **head,struct count *countList, struct link addedLink)
+void addEdge(struct edge **edgeList, int **head, struct count *countList, struct link addedLink)
 {
 
 }

@@ -23,16 +23,16 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
         switch (inputStr[1])
         {
             case 'l':
-                readLink(inputStr, linkList, countList);
+                readLink(inputStr);
                 break;
             case 'n':
-                readNode(inputStr, nodeList, countList);
+                readNode(inputStr);
                 break;
             case 'w':
-                readWay(inputStr, wayList, countList);
+                readWay(inputStr);
                 break;
             case 'g':
-                readGeom(inputStr, geomList, countList);
+                readGeom(inputStr);
                 break;
             default:
                 reportErr(EXIT_Bad_Data, filename),
@@ -84,22 +84,22 @@ void initData(struct link **linkList, struct node **nodeList, struct way **wayLi
     
 }
 
-struct link readLink(char *inputStr, struct link **linkList, struct count *countList)
+struct link readLink(char *inputStr)
 {
 
 }
 
-struct node readNode(char *inputStr, struct node **nodeList, struct count *countList)
+struct node readNode(char *inputStr)
 {
 
 }
 
-struct way readWay(char *inputStr, struct way **wayList, struct count *countList)
+struct way readWay(char *inputStr)
 {
 
 }
 
-struct geom readGeom(char *input, struct geom **geomList, struct count *countList)
+struct geom readGeom(char *input)
 {
 
 }

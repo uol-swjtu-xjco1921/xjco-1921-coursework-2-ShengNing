@@ -4,6 +4,8 @@
 #include "routeInit.h"
 #include "routeSearch.h"
 #include "routeShown.h"
+#include "dataStructure.h"
+#include "mapRead.h"
 
 struct link *linkList;
 struct node *nodeList;

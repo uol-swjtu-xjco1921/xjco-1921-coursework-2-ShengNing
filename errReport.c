@@ -16,5 +16,4 @@ void reportErr(int value, char *filename)
         default:
             printf("ERROR: Unknown error.\n");
     }
-    return;
 }

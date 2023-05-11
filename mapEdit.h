@@ -1,6 +1,5 @@
 #include <stdio.h>
-
-#include "mapRead.h"
+#include "dataStructure.h"
 
 void addLink(struct link **linkList, struct count *countList, struct link addedLink);
 void addNode(struct node **nodeList, struct count *countList, struct node addedNode);
