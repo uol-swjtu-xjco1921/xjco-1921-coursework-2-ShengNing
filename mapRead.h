@@ -40,4 +40,4 @@ struct count
 };
 
 int readFile(char *filename, struct link **linkList, struct node **nodeList, struct way **wayList,
-        struct geom **geomList, struct count *countList);
+             struct geom **geomList, struct edge **edgeList, int *head, struct count *countList);

@@ -1,7 +1,7 @@
 #include "mapRead.h"
 
-int readFile(char *filename, struct link **linkList, struct node **nodeList,
-        struct way **wayList, struct geom **geomList, struct count *countList)
+int readFile(char *filename, struct link **linkList, struct node **nodeList, struct way **wayList,
+        struct geom **geomList, struct edge **edgeList, int *head, struct count *countList)
 {
     FILE *inputFile = fopen(filename, "r");
     if(inputFile == NULL)
@@ -37,7 +37,7 @@ struct geom readGeom(char *input, struct geom **geomList)
 
 
 void dealEdges(struct link **linkList, struct node **nodeList,
-        struct way **wayList, struct edge **edgeList)
+        struct way **wayList, struct edge **edgeList, int *head, struct count **countList)
 {
     // addEdge(&edgeList, &totalEdges, addedLink);
 }
