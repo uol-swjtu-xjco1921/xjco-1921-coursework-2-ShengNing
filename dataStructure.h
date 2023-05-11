@@ -5,6 +5,7 @@ struct link
 {
     int id;
     int node1, node2;
+    int way;
     double length, veg, arch, land;
     char *POI;
 };

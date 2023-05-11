@@ -1,26 +1,67 @@
 #include "mapEdit.h"
 
-void addLink(struct link **linkList, struct count *countList, struct link addedLink)
+int addLink(struct link **linkList, struct count *countList, struct link *addedLink)
 {
-
+    if(addedLink == NULL)
+    {
+        return EXIT_Bad_Data;
+    }
+    
+    countList -> links += 1;
+    *linkList = realloc(*linkList, countList -> links * sizeof(struct link));
+    linkList[countList -> links - 1] = addedLink;
+    
+    return EXIT_NO_ERRORS;
 }
 
-void addNode(struct node **nodeList, struct count *countList, struct node addedNode)
+int addNode(struct node **nodeList, struct count *countList, struct node *addedNode)
 {
-
+    if(addedNode == NULL)
+    {
+        return EXIT_Bad_Data;
+    }
+    
+    countList -> nodes += 1;
+    *nodeList = realloc(*nodeList, countList -> nodes * sizeof(struct node));
+    nodeList[countList -> nodes - 1] = addedNode;
+    
+    return EXIT_NO_ERRORS;
 }
 
-void addWay(struct way **wayList, struct count *countList, struct way addedWay)
+int addWay(struct way **wayList, struct count *countList, struct way *addedWay)
 {
-
+    if(addedWay == NULL)
+    {
+        return EXIT_Bad_Data;
+    }
+    
+    countList -> ways += 1;
+    *wayList = realloc(*wayList, countList -> ways * sizeof(struct way));
+    wayList[countList -> ways - 1] = addedWay;
+    
+    return EXIT_NO_ERRORS;
 }
 
-void addGeom(struct geom **geomList, struct count *countList, struct geom addedGeom)
+int addGeom(struct geom **geomList, struct count *countList, struct geom *addedGeom)
 {
-
+    if(addedGeom == NULL)
+    {
+        return EXIT_Bad_Data;
+    }
+    
+    countList -> geoms += 1;
+    *geomList = realloc(*geomList, countList -> geoms * sizeof(struct geom));
+    geomList[countList -> geoms - 1] = addedGeom;
+    
+    return EXIT_NO_ERRORS;
 }
 
-void addEdge(struct edge **edgeList, int **head, struct count *countList, struct link addedLink)
+int addEdge(struct edge **edgeList, int **head, struct count *countList, struct link *addedLink)
 {
-
+    if(addedLink == NULL)
+    {
+        return EXIT_Bad_Data;
+    }
+    
+    return EXIT_NO_ERRORS;
 }

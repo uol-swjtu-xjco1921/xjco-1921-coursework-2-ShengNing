@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <string.h>
+#include <stdlib.h>
 #include "mapEdit.h"
 #include "errReport.h"
 #include "dataStructure.h"
