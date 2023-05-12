@@ -19,17 +19,30 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
     
     while (fgets(inputStr, maxLength, inputFile) != NULL)
     {
-        int flag = EXIT_NO_ERRORS;
-        struct link tmpLink;
-        struct node tmpNode;
+        //int flag = EXIT_NO_ERRORS;
+        struct link *tmpLink = NULL;
+        /*struct node tmpNode;
         struct way tmpWay;
-        struct geom tmpGeom;
+        struct geom tmpGeom;*/
         
-        switch (inputStr[1])
+        if(inputStr[1]=='l')
+        {
+            readLink(inputStr, tmpLink);
+            
+            *linkList= realloc(*linkList, ((countList->links) + 2) * sizeof(struct link));
+            
+            *(linkList+(countList->links)) = tmpLink;
+            countList->links ++;
+            printf("%ld", *(linkList[countList->links-1])->id );
+        }
+        
+        
+        /*switch (inputStr[1])
         {
             case 'l': // Link
                 tmpLink = readLink(inputStr),
-                        flag = addLink(linkList, countList, &tmpLink);
+                        //flag =
+                        addLink(linkList, countList, &tmpLink);
                 break;
             case 'n': // Node
                 tmpNode = readNode(inputStr),
@@ -44,17 +57,17 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
                         flag = addGeom(geomList, countList, &tmpGeom);
                 break;
             default: // Unknown label
-                reportErr(EXIT_Bad_Data, filename),
-                        flag = EXIT_Bad_Data;
+                reportErr(EXIT_Bad_Data, filename);
+                        //flag = EXIT_Bad_Data;
                 break;
-        }
-        if (flag != EXIT_NO_ERRORS)
+        }*/
+        /*if (flag != EXIT_NO_ERRORS)
         {
             fclose(inputFile);
             free(inputStr);
             reportErr(flag, filename);
             return flag;
-        }
+        }*/
         
     }
     
@@ -94,26 +107,27 @@ void initData(struct link **linkList, struct node **nodeList, struct way **wayLi
     
 }
 
-struct link readLink(char *inputStr)
+void readLink(char *inputStr, struct link *tmpLink)
 {
-    struct link tmpLink, *nullLink = NULL;
-    tmpLink.totalPOI = 0;
-    *(tmpLink.POI) = malloc(0 * sizeof(char *));
-    char *divStr = NULL;
+    tmpLink = malloc(sizeof (struct link));
+    tmpLink->totalPOI = 0;
+    (tmpLink->POI) = malloc(0 * sizeof(char *));
+    char *divStr;
     divStr = strtok(inputStr, " ");
     
     while (divStr != NULL)
     {
-        char *tmpStr = NULL;
-        tmpStr = strtok(divStr, "=");
+        printf("%s\n", divStr);
+        //char *tmpStr, *tmpDivStr = NULL;
+        //strcpy(tmpDivStr, divStr);
+        //tmpStr = strtok(tmpDivStr, "=");
         
-        if (strcmp(tmpStr, "link") == 0) {}
-        
-        else if (strcmp(tmpStr, "id") == 0)
+        /*if (strcmp(tmpStr, "id") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
             tmpLink.id = strtol(tmpStr, NULL, 10);
+            
         }
         
         else if (strcmp(tmpStr, "node") == 0)
@@ -165,23 +179,23 @@ struct link readLink(char *inputStr)
             if (tmpStr != NULL)
             {
                 long pos = strstr(tmpStr, ";") - tmpStr;
-                strncpy(tmpStr, tmpStr, pos);
+                char *poiStr = NULL;
+                strncpy(poiStr, tmpStr, pos);
                 
-                tmpStr = strtok(tmpStr, ",");
+                poiStr = strtok(poiStr, ",");
                 
-                while (tmpStr != NULL)
+                while (poiStr != NULL)
                 {
                     *(tmpLink.POI) = realloc(*(tmpLink.POI), tmpLink.totalPOI + 1 * sizeof(char *));
-                    tmpLink.POI[tmpLink.totalPOI] = tmpStr;
+                    tmpLink.POI[tmpLink.totalPOI] = poiStr;
                     tmpLink.totalPOI += 1;
-                    tmpStr = strtok(NULL, ",");
+                    poiStr = strtok(NULL, ",");
                 }
             }
-        }
+        }*/
         
         divStr = strtok(NULL, " ");
     }
-    return tmpLink;
 }
 
 struct node readNode(char *inputStr)
@@ -196,9 +210,7 @@ struct node readNode(char *inputStr)
         char *tmpStr = NULL;
         tmpStr = strtok(divStr, "=");
         
-        if (strcmp(tmpStr, "node") == 0) {}
-        
-        else if (strcmp(tmpStr, "id") == 0)
+        if (strcmp(tmpStr, "id") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullNode;
@@ -239,9 +251,7 @@ struct way readWay(char *inputStr)
         char *tmpStr = NULL;
         tmpStr = strtok(divStr, "=");
         
-        if (strcmp(tmpStr, "way") == 0) {}
-        
-        else if (strcmp(tmpStr, "id") == 0)
+        if (strcmp(tmpStr, "id") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullWay;
@@ -277,9 +287,7 @@ struct geom readGeom(char *inputStr)
         char *tmpStr = NULL;
         tmpStr = strtok(divStr, "=");
         
-        if (strcmp(tmpStr, "way") == 0) {}
-        
-        else if (strcmp(tmpStr, "id") == 0)
+        if (strcmp(tmpStr, "id") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullGeom;
@@ -299,11 +307,4 @@ struct geom readGeom(char *inputStr)
     }
     
     return tmpGeom;
-}
-
-
-void dealEdges(struct link **linkList, struct node **nodeList,
-               struct way **wayList, struct edge **edgeList, int **head, struct count *countList)
-{
-    // addEdge(&edgeList, &totalEdges, addedLink);
 }

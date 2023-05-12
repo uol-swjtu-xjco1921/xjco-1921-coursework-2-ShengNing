@@ -6,11 +6,16 @@ int addLink(struct link **linkList, struct count *countList, struct link *addedL
     {
         return EXIT_Bad_Data;
     }
+    struct link **newLinkList = realloc(*linkList, (countList->links + 1) * sizeof(struct link));
+    if (*linkList == NULL)
+    {
+        return EXIT_EXTRA_MEMORY;
+    }
+    linkList =newLinkList;
     
-    countList->links += 1;
-    *linkList = realloc(*linkList, countList->links * sizeof(struct link));
-    linkList[countList->links - 1] = addedLink;
-    
+    *linkList[countList->links] = *addedLink;
+    countList->links ++;
+    printf("%ld\n", linkList[countList->links-1]->id);
     return EXIT_NO_ERRORS;
 }
 
@@ -56,12 +61,3 @@ int addGeom(struct geom **geomList, struct count *countList, struct geom *addedG
     return EXIT_NO_ERRORS;
 }
 
-int addEdge(struct edge **edgeList, int **head, struct count *countList, struct link *addedLink)
-{
-    if (addedLink == NULL)
-    {
-        return EXIT_Bad_Data;
-    }
-    
-    return EXIT_NO_ERRORS;
-}

@@ -7,4 +7,3 @@ int addLink(struct link **linkList, struct count *countList, struct link *addedL
 int addNode(struct node **nodeList, struct count *countList, struct node *addedNode);
 int addWay(struct way **wayList, struct count *countList, struct way *addedWay);
 int addGeom(struct geom **geomList, struct count *countList, struct geom *addedGeom);
-int addEdge(struct edge **edgeList, int **head,struct count *countList, struct link *addedLink);
