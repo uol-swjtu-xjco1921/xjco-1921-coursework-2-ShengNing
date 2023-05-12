@@ -17,11 +17,13 @@ void freeData(struct link **linkList, struct node **nodeList, struct way **wayLi
 void initData(struct link **linkList, struct node **nodeList, struct way **wayList,
               struct geom **geomList, struct edge **edgeList, int **head, struct count *countList);
 
-void readLink(char *inputStr, struct link * tmpLink);
+int readBound(char *inputStr, struct bound *boundData);
 
-struct node readNode(char *inputStr);
+void readLink(char *inputStr, struct link *tmpLink);
 
-struct way readWay(char *inputStr);
+void readNode(char *inputStr, struct node *tmpNode);
 
-struct geom readGeom(char *input);
+void readWay(char *inputStr, struct way *tmpWay);
+
+void readGeom(char *inputStr, struct geom *tmpGeom);
 

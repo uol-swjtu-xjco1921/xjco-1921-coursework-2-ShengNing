@@ -19,55 +19,56 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
     
     while (fgets(inputStr, maxLength, inputFile) != NULL)
     {
-        //int flag = EXIT_NO_ERRORS;
-        struct link *tmpLink = NULL;
-        /*struct node tmpNode;
+        int flag = EXIT_NO_ERRORS;
+        struct link tmpLink;
+        struct node tmpNode;
         struct way tmpWay;
-        struct geom tmpGeom;*/
+        struct geom tmpGeom ;
         
-        if(inputStr[1]=='l')
+        if (memcmp(inputStr, "<bounding", 9) == 0)
         {
-            readLink(inputStr, tmpLink);
-            
-            *linkList= realloc(*linkList, ((countList->links) + 2) * sizeof(struct link));
-            
-            *(linkList+(countList->links)) = tmpLink;
-            countList->links ++;
-            printf("%ld", *(linkList[countList->links-1])->id );
+            flag = readBound(inputStr, boundData);
         }
         
-        
-        /*switch (inputStr[1])
+        if (memcmp(inputStr, "<link", 5) == 0)
         {
-            case 'l': // Link
-                tmpLink = readLink(inputStr),
-                        //flag =
-                        addLink(linkList, countList, &tmpLink);
-                break;
-            case 'n': // Node
-                tmpNode = readNode(inputStr),
-                        flag = addNode(nodeList, countList, &tmpNode);
-                break;
-            case 'w': // Way
-                tmpWay = readWay(inputStr),
-                        flag = addWay(wayList, countList, &tmpWay);
-                break;
-            case 'g': // Geom
-                tmpGeom = readGeom(inputStr),
-                        flag = addGeom(geomList, countList, &tmpGeom);
-                break;
-            default: // Unknown label
-                reportErr(EXIT_Bad_Data, filename);
-                        //flag = EXIT_Bad_Data;
-                break;
-        }*/
-        /*if (flag != EXIT_NO_ERRORS)
+            readLink(inputStr, &tmpLink);
+            
+            *linkList = realloc(*linkList, ((*countList).links + 1) * sizeof(struct link));
+            addLink(*linkList, countList, &tmpLink);
+        }
+        
+        if (memcmp(inputStr, "<node", 5) == 0)
+        {
+            readNode(inputStr, &tmpNode);
+            
+            *nodeList = realloc(*nodeList, ((*countList).nodes + 1) * sizeof(struct node));
+            addNode(*nodeList, countList, &tmpNode);
+        }
+        
+        if (memcmp(inputStr, "<way", 4) == 0)
+        {
+            readWay(inputStr, &tmpWay);
+            
+            *wayList = realloc(*wayList, ((*countList).ways + 1) * sizeof(struct way));
+            addWay(*wayList, countList, &tmpWay);
+        }
+        
+        if (memcmp(inputStr, "<geom", 5) == 0)
+        {
+            readGeom(inputStr, &tmpGeom);
+            
+            *geomList = realloc(*geomList, ((*countList).geoms + 1) * sizeof(struct geom));
+            addGeom(*geomList, countList, &tmpGeom);
+        }
+        
+        if (flag != EXIT_NO_ERRORS)
         {
             fclose(inputFile);
             free(inputStr);
             reportErr(flag, filename);
             return flag;
-        }*/
+        }
         
     }
     
@@ -107,77 +108,184 @@ void initData(struct link **linkList, struct node **nodeList, struct way **wayLi
     
 }
 
+int readBound(char *inputStr, struct bound *boundData)
+{
+    char *divStr = NULL;
+    divStr = strtok(inputStr, " ");
+    
+    while (divStr != NULL)
+    {
+        
+        if (memcmp(divStr, "minLat", 6) == 0)
+        {
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            
+            if (tmpStr == NULL)
+            {
+                return EXIT_Bad_Data;
+            }
+            ++tmpStr;
+            boundData->minLat = strtod(tmpStr, NULL);
+        }
+    
+        if (memcmp(divStr, "maxLat", 6) == 0)
+        {
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+        
+            if (tmpStr == NULL)
+            {
+                return EXIT_Bad_Data;
+            }
+            ++tmpStr;
+            boundData->maxLat = strtod(tmpStr, NULL);
+        }
+    
+        if (memcmp(divStr, "minLon", 6) == 0)
+        {
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+        
+            if (tmpStr == NULL)
+            {
+                return EXIT_Bad_Data;
+            }
+            ++tmpStr;
+            boundData->minLon = strtod(tmpStr, NULL);
+        }
+    
+        if (memcmp(divStr, "maxLon", 6) == 0)
+        {
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+        
+            if (tmpStr == NULL)
+            {
+                return EXIT_Bad_Data;
+            }
+            ++tmpStr;
+            boundData->maxLon = strtod(tmpStr, NULL);
+        }
+        
+        divStr = strtok(NULL, " ");
+    }
+    return EXIT_NO_ERRORS;
+}
+
 void readLink(char *inputStr, struct link *tmpLink)
 {
-    tmpLink = malloc(sizeof (struct link));
+    tmpLink = malloc(sizeof(struct link));
     tmpLink->totalPOI = 0;
     (tmpLink->POI) = malloc(0 * sizeof(char *));
+    
     char *divStr;
     divStr = strtok(inputStr, " ");
     
     while (divStr != NULL)
     {
-        printf("%s\n", divStr);
-        //char *tmpStr, *tmpDivStr = NULL;
-        //strcpy(tmpDivStr, divStr);
-        //tmpStr = strtok(tmpDivStr, "=");
         
-        /*if (strcmp(tmpStr, "id") == 0)
+        if (memcmp(divStr, "id", 2) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            tmpLink.id = strtol(tmpStr, NULL, 10);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpLink);
+                return;
+            }
+            ++tmpStr;
+            tmpLink->id = strtol(tmpStr, NULL, 10);
             
         }
         
-        else if (strcmp(tmpStr, "node") == 0)
+        else if (memcmp(divStr, "node", 4) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            if (tmpLink.node1) tmpLink.node2 = strtol(tmpStr, NULL, 10);
-            tmpLink.node1 = strtol(tmpStr, NULL, 10);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpLink);
+                return;
+            }
+            ++tmpStr;
+            if (tmpLink->node1) tmpLink->node2 = strtol(tmpStr, NULL, 10);
+            tmpLink->node1 = strtol(tmpStr, NULL, 10);
         }
         
-        else if (strcmp(tmpStr, "way") == 0)
+        else if (memcmp(divStr, "way", 3) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            tmpLink.way = strtol(tmpStr, NULL, 10);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpLink);
+                return;
+            }
+            ++tmpStr;
+            tmpLink->way = strtol(tmpStr, NULL, 10);
         }
         
-        else if (strcmp(tmpStr, "length") == 0)
+        else if (memcmp(divStr, "length", 6) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            tmpLink.length = strtod(tmpStr, NULL);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpLink);
+                return;
+            }
+            ++tmpStr;
+            tmpLink->length = strtod(tmpStr, NULL);
         }
         
-        else if (strcmp(tmpStr, "veg") == 0)
+        else if (memcmp(divStr, "veg", 3) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            tmpLink.veg = strtod(tmpStr, NULL);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpLink);
+                return;
+            }
+            ++tmpStr;
+            tmpLink->veg = strtod(tmpStr, NULL);
         }
         
-        else if (strcmp(tmpStr, "arch") == 0)
+        else if (memcmp(divStr, "arch", 4) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            tmpLink.arch = strtod(tmpStr, NULL);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpLink);
+                return;
+            }
+            ++tmpStr;
+            tmpLink->arch = strtod(tmpStr, NULL);
         }
         
-        else if (strcmp(tmpStr, "land") == 0)
+        else if (memcmp(divStr, "land", 4) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            tmpLink.land = strtod(tmpStr, NULL);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpLink);
+                return;
+            }
+            ++tmpStr;
+            tmpLink->land = strtod(tmpStr, NULL);
         }
         
-        else if (strcmp(tmpStr, "POI") == 0)
+        else if (memcmp(divStr, "POI", 4) == 0)
         {
-            tmpStr = strtok(NULL, "=");
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr != NULL)
             {
+                ++tmpStr;
+                
                 long pos = strstr(tmpStr, ";") - tmpStr;
                 char *poiStr = NULL;
                 strncpy(poiStr, tmpStr, pos);
@@ -186,125 +294,155 @@ void readLink(char *inputStr, struct link *tmpLink)
                 
                 while (poiStr != NULL)
                 {
-                    *(tmpLink.POI) = realloc(*(tmpLink.POI), tmpLink.totalPOI + 1 * sizeof(char *));
-                    tmpLink.POI[tmpLink.totalPOI] = poiStr;
-                    tmpLink.totalPOI += 1;
+                    *(tmpLink->POI) = realloc(*(tmpLink->POI), tmpLink->totalPOI + 1 * sizeof(char *));
+                    tmpLink->POI[tmpLink->totalPOI] = poiStr;
+                    tmpLink->totalPOI += 1;
                     poiStr = strtok(NULL, ",");
                 }
             }
-        }*/
+        }
         
         divStr = strtok(NULL, " ");
     }
 }
 
-struct node readNode(char *inputStr)
+void readNode(char *inputStr, struct node *tmpNode)
 {
-    struct node tmpNode, *nullNode = NULL;
+    tmpNode = malloc(sizeof(struct node));
     
     char *divStr = NULL;
     divStr = strtok(inputStr, " ");
     
     while (divStr != NULL)
     {
-        char *tmpStr = NULL;
-        tmpStr = strtok(divStr, "=");
         
-        if (strcmp(tmpStr, "id") == 0)
+        if (memcmp(divStr, "id", 2) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullNode;
-            tmpNode.id = strtol(tmpStr, NULL, 10);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpNode);
+                return;
+            }
+            ++tmpStr;
+            tmpNode->id = strtol(tmpStr, NULL, 10);
         }
         
-        else if (strcmp(tmpStr, "lat") == 0)
+        else if (memcmp(divStr, "lat", 3) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullNode;
-            tmpNode.lat = strtod(tmpStr, NULL);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpNode);
+                return;
+            }
+            ++tmpStr;
+            tmpNode->lat = strtod(tmpStr, NULL);
         }
         
-        else if (strcmp(tmpStr, "lon") == 0)
+        else if (memcmp(divStr, "lon", 3) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullNode;
-            tmpNode.lon = strtod(tmpStr, NULL);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpNode);
+                return;
+            }
+            ++tmpStr;
+            tmpNode->lon = strtod(tmpStr, NULL);
         }
         
         divStr = strtok(NULL, " ");
     }
-    
-    return tmpNode;
 }
 
-struct way readWay(char *inputStr)
+void readWay(char *inputStr, struct way *tmpWay)
 {
-    struct way tmpWay, *nullWay = NULL;
-    tmpWay.nodes = malloc(0 * sizeof(long));
-    tmpWay.size = 0;
+    tmpWay = malloc(sizeof(struct way));
+    tmpWay->nodes = malloc(0 * sizeof(long));
+    tmpWay->size = 0;
     
     char *divStr = NULL;
     divStr = strtok(inputStr, " ");
     
     while (divStr != NULL)
     {
-        char *tmpStr = NULL;
-        tmpStr = strtok(divStr, "=");
         
-        if (strcmp(tmpStr, "id") == 0)
+        if (memcmp(divStr, "id", 2) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullWay;
-            tmpWay.id = strtol(tmpStr, NULL, 10);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpWay);
+                return;
+            }
+            ++tmpStr;
+            tmpWay->id = strtol(tmpStr, NULL, 10);
         }
         
-        else if (strcmp(tmpStr, "node") == 0)
+        else if (memcmp(divStr, "node", 2) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullWay;
-            tmpWay.nodes = realloc(tmpWay.nodes, (tmpWay.size + 1) * sizeof(long));
-            tmpWay.nodes[tmpWay.size] = strtol(tmpStr, NULL, 10);
-            tmpWay.size += 1;
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpWay);
+                return;
+            }
+            ++tmpStr;
+            tmpWay->nodes = realloc(tmpWay->nodes, (tmpWay->size + 1) * sizeof(long));
+            tmpWay->nodes[tmpWay->size] = strtol(tmpStr, NULL, 10);
+            tmpWay->size += 1;
         }
         
         divStr = strtok(NULL, " ");
     }
-    
-    return tmpWay;
 }
 
-struct geom readGeom(char *inputStr)
+void readGeom(char *inputStr, struct geom *tmpGeom)
 {
-    struct geom tmpGeom, *nullGeom = NULL;
-    tmpGeom.nodes = malloc(0 * sizeof(long));
-    tmpGeom.size = 0;
+    tmpGeom = malloc(sizeof(struct geom));
+    tmpGeom->nodes = malloc(0 * sizeof(long));
+    tmpGeom->size = 0;
     
     char *divStr = NULL;
     divStr = strtok(inputStr, " ");
     
     while (divStr != NULL)
     {
-        char *tmpStr = NULL;
-        tmpStr = strtok(divStr, "=");
         
-        if (strcmp(tmpStr, "id") == 0)
+        if (memcmp(divStr, "id", 2) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullGeom;
-            tmpGeom.id = strtol(tmpStr, NULL, 10);
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpGeom);
+                return;
+            }
+            ++tmpStr;
+            tmpGeom->id = strtol(tmpStr, NULL, 10);
         }
         
-        else if (strcmp(tmpStr, "node") == 0)
+        else if (memcmp(divStr, "node", 2) == 0)
         {
-            tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullGeom;
-            tmpGeom.nodes = realloc(tmpGeom.nodes, (tmpGeom.size + 1) * sizeof(long));
-            tmpGeom.nodes[tmpGeom.size] = strtol(tmpStr, NULL, 10);
-            tmpGeom.size += 1;
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                free(tmpGeom);
+                return;
+            }
+            ++tmpStr;
+            tmpGeom->nodes = realloc(tmpGeom->nodes, (tmpGeom->size + 1) * sizeof(long));
+            tmpGeom->nodes[tmpGeom->size] = strtol(tmpStr, NULL, 10);
+            tmpGeom->size += 1;
         }
         
         divStr = strtok(NULL, " ");
     }
-    
-    return tmpGeom;
 }
