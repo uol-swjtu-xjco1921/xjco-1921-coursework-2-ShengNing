@@ -3,36 +3,42 @@
 
 struct link
 {
-    int id;
-    int node1, node2;
-    int way;
+    long id;
+    long node1, node2;
+    long way;
+    int totalPOI;
     double length, veg, arch, land;
-    char *POI;
+    char **POI;
 };
 
 struct node
 {
-    int id;
+    long id;
     double lat, lon;
 };
 
 struct way
 {
-    int id;
-    int *nodes;
+    long id;
+    int size;
+    long *nodes;
 };
 
 struct geom
 {
-    int id;
-    int *nodes;
+    long id;
+    int size;
+    long *nodes;
 };
 
 struct edge
 {
-    int to, nxt;
+    long id;
+    long to, nxt;
+    long way;
+    int totalPOI;
     double length, speedLimit;
-    char *POI;
+    char **POI;
 };
 
 struct count

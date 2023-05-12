@@ -78,11 +78,11 @@ void freeData(struct link **linkList, struct node **nodeList, struct way **wayLi
 void initData(struct link **linkList, struct node **nodeList, struct way **wayList,
               struct geom **geomList, struct edge **edgeList, int **head, struct count *countList)
 {
-    countList -> links = 0;
-    countList -> nodes = 0;
-    countList -> ways = 0;
-    countList -> geoms = 0;
-    countList -> edges = 0;
+    countList->links = 0;
+    countList->nodes = 0;
+    countList->ways = 0;
+    countList->geoms = 0;
+    countList->edges = 0;
     
     
     *linkList = malloc(0 * sizeof(struct link));
@@ -96,7 +96,9 @@ void initData(struct link **linkList, struct node **nodeList, struct way **wayLi
 
 struct link readLink(char *inputStr)
 {
-    struct link *tmpLink = NULL, *nullLink = NULL;
+    struct link tmpLink, *nullLink = NULL;
+    tmpLink.totalPOI = 0;
+    *(tmpLink.POI) = malloc(0 * sizeof(char *));
     char *divStr = NULL;
     divStr = strtok(inputStr, " ");
     
@@ -111,83 +113,192 @@ struct link readLink(char *inputStr)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
-            tmpLink -> id = (int) strtol(tmpStr, NULL, 10);
+            tmpLink.id = strtol(tmpStr, NULL, 10);
         }
         
         else if (strcmp(tmpStr, "node") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
-            if (tmpLink -> node1) tmpLink -> node2 = (int) strtol(tmpStr, NULL, 10);
-            tmpLink -> node1 = (int) strtol(tmpStr, NULL, 10);
+            if (tmpLink.node1) tmpLink.node2 = strtol(tmpStr, NULL, 10);
+            tmpLink.node1 = strtol(tmpStr, NULL, 10);
         }
         
         else if (strcmp(tmpStr, "way") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
-            tmpLink -> way = (int) strtol(tmpStr, NULL, 10);
+            tmpLink.way = strtol(tmpStr, NULL, 10);
         }
         
         else if (strcmp(tmpStr, "length") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
-            tmpLink -> length = strtod(tmpStr, NULL);
+            tmpLink.length = strtod(tmpStr, NULL);
         }
         
         else if (strcmp(tmpStr, "veg") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
-            tmpLink -> veg = strtod(tmpStr, NULL);
+            tmpLink.veg = strtod(tmpStr, NULL);
         }
         
         else if (strcmp(tmpStr, "arch") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
-            tmpLink -> arch = strtod(tmpStr, NULL);
+            tmpLink.arch = strtod(tmpStr, NULL);
         }
         
         else if (strcmp(tmpStr, "land") == 0)
         {
             tmpStr = strtok(NULL, "=");
             if (tmpStr == NULL) return *nullLink;
-            tmpLink -> land = strtod(tmpStr, NULL);
+            tmpLink.land = strtod(tmpStr, NULL);
         }
         
         else if (strcmp(tmpStr, "POI") == 0)
         {
             tmpStr = strtok(NULL, "=");
-            if (tmpStr == NULL) return *nullLink;
-            tmpLink -> POI = tmpStr;
+            if (tmpStr != NULL)
+            {
+                long pos = strstr(tmpStr, ";") - tmpStr;
+                strncpy(tmpStr, tmpStr, pos);
+                
+                tmpStr = strtok(tmpStr, ",");
+                
+                while (tmpStr != NULL)
+                {
+                    *(tmpLink.POI) = realloc(*(tmpLink.POI), tmpLink.totalPOI + 1 * sizeof(char *));
+                    tmpLink.POI[tmpLink.totalPOI] = tmpStr;
+                    tmpLink.totalPOI += 1;
+                    tmpStr = strtok(NULL, ",");
+                }
+            }
         }
         
         divStr = strtok(NULL, " ");
     }
-    return *tmpLink;
+    return tmpLink;
 }
 
 struct node readNode(char *inputStr)
 {
-    struct node *tmpNode = NULL;
+    struct node tmpNode, *nullNode = NULL;
     
-    return *tmpNode;
+    char *divStr = NULL;
+    divStr = strtok(inputStr, " ");
+    
+    while (divStr != NULL)
+    {
+        char *tmpStr = NULL;
+        tmpStr = strtok(divStr, "=");
+        
+        if (strcmp(tmpStr, "node") == 0) {}
+        
+        else if (strcmp(tmpStr, "id") == 0)
+        {
+            tmpStr = strtok(NULL, "=");
+            if (tmpStr == NULL) return *nullNode;
+            tmpNode.id = strtol(tmpStr, NULL, 10);
+        }
+        
+        else if (strcmp(tmpStr, "lat") == 0)
+        {
+            tmpStr = strtok(NULL, "=");
+            if (tmpStr == NULL) return *nullNode;
+            tmpNode.lat = strtod(tmpStr, NULL);
+        }
+        
+        else if (strcmp(tmpStr, "lon") == 0)
+        {
+            tmpStr = strtok(NULL, "=");
+            if (tmpStr == NULL) return *nullNode;
+            tmpNode.lon = strtod(tmpStr, NULL);
+        }
+        
+        divStr = strtok(NULL, " ");
+    }
+    
+    return tmpNode;
 }
 
 struct way readWay(char *inputStr)
 {
-    struct way *tmpWay = NULL;
+    struct way tmpWay, *nullWay = NULL;
+    tmpWay.nodes = malloc(0 * sizeof(long));
+    tmpWay.size = 0;
     
-    return *tmpWay;
+    char *divStr = NULL;
+    divStr = strtok(inputStr, " ");
+    
+    while (divStr != NULL)
+    {
+        char *tmpStr = NULL;
+        tmpStr = strtok(divStr, "=");
+        
+        if (strcmp(tmpStr, "way") == 0) {}
+        
+        else if (strcmp(tmpStr, "id") == 0)
+        {
+            tmpStr = strtok(NULL, "=");
+            if (tmpStr == NULL) return *nullWay;
+            tmpWay.id = strtol(tmpStr, NULL, 10);
+        }
+        
+        else if (strcmp(tmpStr, "node") == 0)
+        {
+            tmpStr = strtok(NULL, "=");
+            if (tmpStr == NULL) return *nullWay;
+            tmpWay.nodes = realloc(tmpWay.nodes, (tmpWay.size + 1) * sizeof(long));
+            tmpWay.nodes[tmpWay.size] = strtol(tmpStr, NULL, 10);
+            tmpWay.size += 1;
+        }
+        
+        divStr = strtok(NULL, " ");
+    }
+    
+    return tmpWay;
 }
 
-struct geom readGeom(char *input)
+struct geom readGeom(char *inputStr)
 {
-    struct geom *tmpGeom = NULL;
+    struct geom tmpGeom, *nullGeom = NULL;
+    tmpGeom.nodes = malloc(0 * sizeof(long));
+    tmpGeom.size = 0;
     
-    return *tmpGeom;
+    char *divStr = NULL;
+    divStr = strtok(inputStr, " ");
+    
+    while (divStr != NULL)
+    {
+        char *tmpStr = NULL;
+        tmpStr = strtok(divStr, "=");
+        
+        if (strcmp(tmpStr, "way") == 0) {}
+        
+        else if (strcmp(tmpStr, "id") == 0)
+        {
+            tmpStr = strtok(NULL, "=");
+            if (tmpStr == NULL) return *nullGeom;
+            tmpGeom.id = strtol(tmpStr, NULL, 10);
+        }
+        
+        else if (strcmp(tmpStr, "node") == 0)
+        {
+            tmpStr = strtok(NULL, "=");
+            if (tmpStr == NULL) return *nullGeom;
+            tmpGeom.nodes = realloc(tmpGeom.nodes, (tmpGeom.size + 1) * sizeof(long));
+            tmpGeom.nodes[tmpGeom.size] = strtol(tmpStr, NULL, 10);
+            tmpGeom.size += 1;
+        }
+        
+        divStr = strtok(NULL, " ");
+    }
+    
+    return tmpGeom;
 }
 
 
