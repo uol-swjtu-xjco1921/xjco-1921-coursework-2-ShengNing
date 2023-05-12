@@ -12,4 +12,4 @@ clean:
 	$(CC) -c $(CFLAGS) -I. $< -o $@
 
 routeDealing: $(OBJT)
-	$(CC) $(CFLAGS) -o pgmEcho $(OBJT1)
+	$(CC) $(CFLAGS) -o routeDealing $(OBJT)

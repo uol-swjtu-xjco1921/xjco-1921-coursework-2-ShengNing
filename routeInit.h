@@ -1,8 +1,9 @@
-//
-// Created by jieee on 5/8/23.
-//
+#include <stdio.h>
+#include "errReport.h"
+#include "dataStructure.h"
 
-#ifndef XJCO_1921_COURSEWORK_2_SHENGNING_ROUTEINIT_H
-#define XJCO_1921_COURSEWORK_2_SHENGNING_ROUTEINIT_H
-
-#endif //XJCO_1921_COURSEWORK_2_SHENGNING_ROUTEINIT_H
+void routeInit();
+int addEdge(struct edge **edgeList, int **head, struct count *countList, struct link *addedLink);
+void dealEdges(struct link **linkList, struct node **nodeList,
+               struct way **wayList, struct edge **edgeList, int **head, struct count *countList);
+int findIndex(long *arr, long value);
