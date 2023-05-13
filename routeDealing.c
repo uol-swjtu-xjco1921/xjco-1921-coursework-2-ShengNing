@@ -1,4 +1,3 @@
-
 #include "errReport.h"
 #include "mapEdit.h"
 #include "routeInit.h"
@@ -18,13 +17,13 @@ int *head;
 
 int main(int argc, char **argv)
 {
-    /*if (argc != 2)
+    if (argc != 2)
     {
         reportErr(EXIT_WRONG_ARG_COUNT, argv[0]);
         return EXIT_WRONG_ARG_COUNT;
-    }*/
+    }
     
-    int returnValue = readFile("leeds.map", &linkList, &nodeList,
+    int returnValue = readFile(argv[1], &linkList, &nodeList,
                                &wayList, &geomList, &edgeList, &head, &countList, &boundData);
     if (returnValue)
     {
@@ -32,5 +31,7 @@ int main(int argc, char **argv)
         return returnValue;
     }
     printf("The file was read successfully.\n");
+    
+    
     return 0;
 }

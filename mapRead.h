@@ -19,11 +19,11 @@ void initData(struct link **linkList, struct node **nodeList, struct way **wayLi
 
 int readBound(char *inputStr, struct bound *boundData);
 
-void readLink(char *inputStr, struct link *tmpLink);
+int readLink(char *inputStr, struct link *tmpLink);
 
-void readNode(char *inputStr, struct node *tmpNode);
+int readNode(char *inputStr, struct node *tmpNode);
 
-void readWay(char *inputStr, struct way *tmpWay);
+int readWay(char *inputStr, struct way *tmpWay);
 
-void readGeom(char *inputStr, struct geom *tmpGeom);
+int readGeom(char *inputStr, struct geom *tmpGeom);
 
