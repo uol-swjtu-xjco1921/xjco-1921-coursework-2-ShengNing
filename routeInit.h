@@ -5,8 +5,6 @@
 #include "errReport.h"
 #include "dataStructure.h"
 
-double distance(struct node a, struct node b);
-
 int cmpLink(const void *a, const void *b);
 
 int cmpNode(const void *a, const void *b);
@@ -21,10 +19,10 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
 
 void routeInit();
 
-void addEdge(struct edge *edgeList, int *head, struct count *countList, struct link *addedLink);
+void addEdge(struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink);
 
 void dealEdges(struct link **linkList, struct node **nodeList,
-               struct way **wayList, struct edge **edgeList, int **head, struct count *countList);
+               long **wayIndex, struct edge **edgeList, int **head, struct count *countList);
 
 int findLinkIndex(struct link *linkList, int limit, long id);
 

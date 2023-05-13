@@ -1,10 +1,5 @@
 #include "routeInit.h"
 
-double distance(struct node a, struct node b)
-{
-    return sqrt((a.lon - b.lon) * (a.lon - b.lon) + (a.lat - b.lat) * (a.lat - b.lat));
-}
-
 int cmpLink(const void *a, const void *b)
 {
     struct link c = *(struct link *) a;
@@ -33,7 +28,6 @@ void sortData(struct link **linkList, struct node **nodeList, long **wayIndex,
     qsort(*nodeList, countList->nodes, sizeof(*nodeList[0]), cmpNode);
     qsort(*wayIndex, countList->ways, sizeof(long), cmpWayAndGeom);
     qsort(*geomIndex, countList->geoms, sizeof(long), cmpWayAndGeom);
-    
 }
 
 int detectData(struct link **linkList, struct node **nodeList, struct way **wayList,
@@ -51,7 +45,7 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
         node2Number = findNodeIndex(*nodeList, countList->nodes, (*linkList + i)->node2);
         if (node1Number == - 1 || node2Number == - 1)
             return EXIT_UNKNOWN_NODE;
-        
+
 //        if ((*linkList + i)->length - distance(*(*nodeList + node1Number), *(*nodeList + node2Number)) > 1e-6)
 //        {
 //            printf("%ld %ld\n",(*linkList + i)->id, (*nodeList + node2Number)->id);
@@ -59,14 +53,6 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
 //            printf("%lf %lf %lf %lf\n", (*nodeList + node1Number)->lat, (*nodeList + node1Number)->lon, (*nodeList + node2Number)->lat, (*nodeList + node2Number)->lon);
 //            return EXIT_UNMATCHED_LENGTH;
 //        }
-         
-//         int wayNumber = findWayOrGeomIndex(*wayIndex, countList->ways, (*linkList + i)->way);
-//
-//         if (wayNumber == - 1)
-//         {
-//             printf("%ld\n", (*linkList + i)->way);
-//             return EXIT_UNKNOWN_WAY;
-//         }
     }
     // verify node
     for (int i = 0; i < (countList->nodes); ++ i)
@@ -79,7 +65,7 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
     for (int i = 0; i < (countList->ways); ++ i)
     {
         if (i + 1 < (countList->ways))
-            if ((*wayIndex + i) == (*wayIndex + i + 1))
+            if (*(*wayIndex + i) == *(*wayIndex + i + 1))
                 return EXIT_REPEAT_ID;
         int wayNumber = findWayOrGeomIndex(*wayIndex, countList->ways, *(*wayIndex + i));
         for (int j = 0; j < (*wayList + wayNumber)->size; ++ j)
@@ -93,7 +79,7 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
     for (int i = 0; i < (countList->geoms); ++ i)
     {
         if (i + 1 < (countList->geoms))
-            if ((*geomIndex + i) == (*geomIndex + i + 1))
+            if (*(*geomIndex + i) == *(*geomIndex + i + 1))
                 return EXIT_REPEAT_ID;
         int geomNumber = findWayOrGeomIndex(*geomIndex, countList->geoms, *(*geomIndex + i));
         for (int j = 0; j < (*geomList + geomNumber)->size; ++ j)
@@ -116,23 +102,30 @@ void initSpeed()
 
 }
 
-void addEdge(struct edge *edgeList, int *head, struct count *countList, struct link *addedLink)
+void addEdge(struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink)
 {
-    /*int node1Index = findIndex(addedLink->node1),
-            node2Index = findIndex(addedLink->node2);*/
     
-    // edgeList[countList->edges + 1] = {.to=node2Index, .nxt=head[node1Index]};
+    int node1Index = findNodeIndex(*nodeList, countList->nodes, addedLink->node1),
+            node2Index = findNodeIndex(*nodeList, countList->nodes, addedLink->node2);
     
+    struct edge tmpEdge1 = {addedLink->id, node2Index, head[node1Index], addedLink->length};
+    edgeList[countList->edges] = tmpEdge1, head[node1Index] = countList->edges;
+    
+    struct edge tmpEdge2 = {addedLink->id, node1Index, head[node2Index], addedLink->length};
+    edgeList[countList->edges + 1] = tmpEdge2, head[node2Index] = countList->edges + 1;
 }
 
 void dealEdges(struct link **linkList, struct node **nodeList,
-               struct way **wayList, struct edge **edgeList, int **head, struct count *countList)
+               long **wayIndex, struct edge **edgeList, int **head, struct count *countList)
 {
+    *head = malloc(countList->links * sizeof(int));
     for (int i = 0; i < (countList->links); ++ i)
     {
+        int wayNumber = findWayOrGeomIndex(*wayIndex, countList->ways, (*linkList + i)->way);
+        if (wayNumber == - 1) continue;
+        
         *edgeList = realloc(*edgeList, (countList->edges + 2) * sizeof(struct edge));
-        *head = realloc(*head, (countList->edges + 2) * sizeof(int));
-        addEdge(*edgeList, *head, countList, linkList[i]);
+        addEdge(*edgeList, nodeList, *head, countList, (*linkList + i));
     }
 }
 

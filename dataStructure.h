@@ -35,10 +35,7 @@ struct edge
 {
     long id;
     long to, nxt;
-    long way;
-    int totalPOI;
     double length, speedLimit;
-    char *POI[100];
 };
 
 struct count

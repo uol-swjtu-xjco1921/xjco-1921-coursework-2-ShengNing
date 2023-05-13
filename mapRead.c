@@ -99,7 +99,7 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
         return returnValue;
     }
     
-    //dealEdges(linkList, nodeList, wayList, edgeList, head, countList);
+    dealEdges(linkList, nodeList, &wayIndex, edgeList, head, countList);
     
     free(wayIndex);
     free(geomIndex);
@@ -427,7 +427,7 @@ int readWay(char *inputStr, struct way *tmpWay)
             }
             ++ tmpStr;
             tmpWay->nodes = realloc(tmpWay->nodes, (tmpWay->size + 1) * sizeof(long));
-            *(tmpWay->nodes+tmpWay->size) = strtol(tmpStr, NULL, 10);
+            *(tmpWay->nodes + tmpWay->size) = strtol(tmpStr, NULL, 10);
             tmpWay->size += 1;
         }
         
