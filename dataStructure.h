@@ -38,7 +38,7 @@ struct edge
     long way;
     int totalPOI;
     double length, speedLimit;
-    char **POI;
+    char *POI[100];
 };
 
 struct count
@@ -50,5 +50,6 @@ struct bound
 {
     double minLat, maxLat, minLon, maxLon;
 };
+
 
 #endif //XJCO_1921_COURSEWORK_2_SHENGNING_DATASTRUCTURE_H
