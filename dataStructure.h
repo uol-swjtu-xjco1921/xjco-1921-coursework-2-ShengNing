@@ -8,7 +8,7 @@ struct link
     long way;
     int totalPOI;
     double length, veg, arch, land;
-    char **POI;
+    char (*POI)[100];
 };
 
 struct node
