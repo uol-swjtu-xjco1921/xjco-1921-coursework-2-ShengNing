@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     initSpeed(&linkList, &countList);
     
     
-    while(1)
+    while (1)
     {
         system("clear");
         printf("Enter the number to select the function.\n");
@@ -48,17 +48,17 @@ int main(int argc, char **argv)
         char input[100];
         scanf("%s", input);
         long value = strtol(input, NULL, 10);
-        if(value == 0)
+        if (value == 0)
         {
             printf("Exit?.\n");
             printf("1. Exit.\n");
             printf("0. Back.\n");
             scanf("%s", input);
             value = strtol(input, NULL, 10);
-            if(value == 1) break;
+            if (value == 1) break;
             else continue;
         }
-        if(value == 1)
+        if (value == 1)
         {
             long startNode, endNode;
             double shortestDis = 0;
@@ -70,11 +70,12 @@ int main(int argc, char **argv)
             printf("Enter the id of second node.\n");
             scanf("%s", input);
             endNode = strtol(input, NULL, 10);
-    
+            
             routeInit(&linkList, &nodeList, &edgeList, &head, &countList, 0);
-    
-            returnValue = dijkstra(edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode, endNode, POI, &shortestDis);
-    
+            
+            returnValue = dijkstra(linkList, edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode,
+                                   endNode, POI, &shortestDis);
+            
             if (returnValue)
             {
                 reportErr(returnValue, argv[1]);
@@ -86,14 +87,14 @@ int main(int argc, char **argv)
             printf("The pasted nodes are:\n");
             for (int i = 0; i < nodeCount; ++ i)
             {
-                printf("%d: %ld ",i+1, nodeList[pastNodes[i]].id);
+                printf("%d: %ld ", i + 1, nodeList[pastNodes[i]].id);
             }
             printf("\n");
             printf("Type any to continue.");
             scanf("%s", input);
         }
-    
-        if(value == 2)
+        
+        if (value == 2)
         {
             long startNode, endNode;
             double shortestDis = 0;
@@ -105,11 +106,12 @@ int main(int argc, char **argv)
             printf("Enter the id of second node.\n");
             scanf("%s", input);
             endNode = strtol(input, NULL, 10);
-        
+            
             routeInit(&linkList, &nodeList, &edgeList, &head, &countList, 1);
-        
-            returnValue = dijkstra(edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode, endNode, POI, &shortestDis);
-        
+            
+            returnValue = dijkstra(linkList, edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode,
+                                   endNode, POI, &shortestDis);
+            
             if (returnValue)
             {
                 reportErr(returnValue, argv[1]);
@@ -121,14 +123,14 @@ int main(int argc, char **argv)
             printf("The pasted nodes are:\n");
             for (int i = 0; i < nodeCount; ++ i)
             {
-                printf("%d: %ld ",i+1, nodeList[pastNodes[i]].id);
+                printf("%d: %ld ", i + 1, nodeList[pastNodes[i]].id);
             }
             printf("\n");
             printf("Type any to continue.");
             scanf("%s", input);
         }
-    
-        if(value == 3)
+        
+        if (value == 3)
         {
             long startNode, endNode;
             double shortestDis = 0;
@@ -145,9 +147,10 @@ int main(int argc, char **argv)
             POI = input;
             
             routeInit(&linkList, &nodeList, &edgeList, &head, &countList, 0);
-        
-            returnValue = dijkstra(edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode, endNode, POI, &shortestDis);
-        
+            
+            returnValue = dijkstra(linkList, edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode,
+                                   endNode, POI, &shortestDis);
+            
             if (returnValue)
             {
                 reportErr(returnValue, argv[1]);
@@ -159,7 +162,7 @@ int main(int argc, char **argv)
             printf("The pasted nodes are:\n");
             for (int i = 0; i < nodeCount; ++ i)
             {
-                printf("%d: %ld ",i+1, nodeList[pastNodes[i]].id);
+                printf("%d: %ld ", i + 1, nodeList[pastNodes[i]].id);
             }
             printf("\n");
             printf("Type any to continue.");
@@ -168,25 +171,5 @@ int main(int argc, char **argv)
     }
     freeData(&linkList, &nodeList, &wayList, &geomList, &edgeList, &head);
     
-    
-//    routeInit(&linkList, &nodeList, &edgeList, &head, &countList, 1);
-//
-//    int *pastNodes = NULL, nodeCount;
-//    double shortestDis = 0;
-//    long startNode = 288777834, endNode = 288953410;
-//    char *POI = NULL;
-//    returnValue = dijkstra(edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode, endNode, POI, &shortestDis);
-//
-//    if (returnValue)
-//    {
-//        reportErr(returnValue, argv[1]);
-//        return 0;
-//    }
-//    printf("dis: %lf\n", shortestDis);
-//    for (int i = 0; i < nodeCount; ++ i)
-//    {
-//        printf("%ld ", nodeList[pastNodes[i]].id);
-//    }
-//    printf("\n");
     return 0;
 }

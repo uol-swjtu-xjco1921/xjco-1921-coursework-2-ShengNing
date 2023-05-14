@@ -135,16 +135,16 @@ void initSpeed(struct link **linkList, struct count *countList)
     }
 }
 
-void addEdge(struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink)
+void addEdge(int linkNumber, struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink)
 {
     
     int node1Index = findNodeIndex(*nodeList, countList->nodes, addedLink->node1),
             node2Index = findNodeIndex(*nodeList, countList->nodes, addedLink->node2);
     
-    struct edge tmpEdge1 = {addedLink->id, node2Index, head[node1Index], addedLink->length};
+    struct edge tmpEdge1 = {addedLink->id, linkNumber, node2Index, head[node1Index], addedLink->length};
     edgeList[countList->edges] = tmpEdge1, head[node1Index] = countList->edges;
     
-    struct edge tmpEdge2 = {addedLink->id, node1Index, head[node2Index], addedLink->length};
+    struct edge tmpEdge2 = {addedLink->id, linkNumber, node1Index, head[node2Index], addedLink->length};
     edgeList[countList->edges + 1] = tmpEdge2, head[node2Index] = countList->edges + 1;
 }
 
@@ -157,9 +157,10 @@ void dealEdges(struct link **linkList, struct node **nodeList,
     {
         int wayNumber = findWayOrGeomIndex(*wayIndex, countList->ways, (*linkList + i)->way);
         if (wayNumber == - 1) continue;
+        int linkNumber = findLinkIndex(*linkList, countList->links, (*linkList + i)->id);
         
         *edgeList = realloc(*edgeList, (countList->edges + 2) * sizeof(struct edge));
-        addEdge(*edgeList, nodeList, *head, countList, (*linkList + i));
+        addEdge(linkNumber,*edgeList, nodeList, *head, countList, (*linkList + i));
         countList->edges += 2;
         
     }

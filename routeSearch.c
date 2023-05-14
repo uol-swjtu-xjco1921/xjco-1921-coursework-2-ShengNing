@@ -16,9 +16,9 @@ void initSearch(int num)
     }
 }
 
-int dijkstra(struct edge *edgeList, const int *head, struct count *countList, int **pastNodes, int *nodeCount,
-             struct node **nodeList,
-             long startNode, long endNode, const char *POI, double *shortestDis)
+int dijkstra(struct link *linkList, struct edge *edgeList, const int *head, struct count *countList, int **pastNodes,
+             int *nodeCount,
+             struct node **nodeList, long startNode, long endNode, const char *POI, double *shortestDis)
 {
     ansNodes = (int *) realloc(ansNodes, 0 * sizeof(int));
     
@@ -36,7 +36,7 @@ int dijkstra(struct edge *edgeList, const int *head, struct count *countList, in
     visitNode[0] = 1;
     
     int flag = (POI == NULL);
-    search(edgeList, head, pastList, 1, 0, startNumber, endNumber, POI, flag);
+    search(linkList, edgeList, head, pastList, 1, 0, startNumber, endNumber, POI, flag);
     
     if (ansNodes == NULL)
     {
@@ -57,7 +57,7 @@ int dijkstra(struct edge *edgeList, const int *head, struct count *countList, in
     return EXIT_NO_ERRORS;
 }
 
-void search(struct edge *edgeList, const int *head, int *pastNodes, int nodeCount, double nowDis,
+void search(struct link *linkList, struct edge *edgeList, const int *head, int *pastNodes, int nodeCount, double nowDis,
             int nowNode, int endNumber, const char *POI, int flag)
 {
     if (nowNode == endNumber)
@@ -73,20 +73,33 @@ void search(struct edge *edgeList, const int *head, int *pastNodes, int nodeCoun
     {
         if (visitNode[edgeList[i].to]) continue;
         if (nowDis + edgeList[i].length > dis[edgeList[i].to]) continue;
+        
+        if (linkList[edgeList[i].index].totalPOI && ! flag)
+        {
+            for (int j = 0; j < linkList[edgeList[i].index].totalPOI; ++ j)
+            {
+                if (strcmp(linkList[edgeList[i].index].POI[j], POI) == 0)
+                {
+                    flag = 1;
+                }
+            }
+        }
+        
         if (flag == 1)
         {
             dis[edgeList[i].to] = nowDis + edgeList[i].length;
-            visitNode[nowNode] = 1;
             pastNodes[nodeCount] = edgeList[i].to;
             visitNode[edgeList[i].to] = 1;
-            search(edgeList, head, pastNodes, nodeCount + 1, dis[edgeList[i].to], edgeList[i].to, endNumber, POI, flag);
+            search(linkList, edgeList, head, pastNodes, nodeCount + 1, dis[edgeList[i].to], edgeList[i].to, endNumber,
+                   POI, flag);
             visitNode[edgeList[i].to] = 0;
         }
         else
         {
             pastNodes[nodeCount] = nowNode;
             visitNode[edgeList[i].to] = 1;
-            search(edgeList, head, pastNodes, nodeCount + 1,
+            pastNodes[nodeCount] = edgeList[i].to;
+            search(linkList, edgeList, head, pastNodes, nodeCount + 1,
                    nowDis + edgeList[i].length, edgeList[i].to, endNumber, POI, 1);
             visitNode[edgeList[i].to] = 0;
         }

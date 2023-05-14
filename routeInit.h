@@ -22,7 +22,7 @@ void routeInit(struct link **linkList, struct node **nodeList,
 
 void initSpeed(struct link **linkList, struct count *countList);
 
-void addEdge(struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink);
+void addEdge(int linkNumber, struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink);
 
 void dealEdges(struct link **linkList, struct node **nodeList,
                long **wayIndex, struct edge **edgeList, int **head, struct count *countList);
