@@ -8,6 +8,11 @@ struct link
     long way;
     int totalPOI;
     double length, veg, arch, land, speedLimit;
+    
+    int attributeCount;
+    char (*attributeName)[15];
+    double attribute[15];
+    
     char (*POI)[100];
 };
 

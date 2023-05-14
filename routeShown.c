@@ -1,6 +1,6 @@
 #include "routeShown.h"
 
-const int WINDOW_WIDTH = 1200, WINDOW_HEIGHT = 1200;
+const int WINDOW_WIDTH = 720, WINDOW_HEIGHT = 1280;
 const int RECT_WIDTH = 6, RECT_HEIGHT = 6;
 const int delta = 3;
 
@@ -54,8 +54,8 @@ void sdl_ellipse(SDL_Renderer *r, int x0, int y0, int radiusX, int radiusY)
 void initSDL()
 {
     SDL_Init(SDL_INIT_EVERYTHING);
-    window = SDL_CreateWindow("routeDealing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
-                              WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("routeDealing", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_HEIGHT,
+                              WINDOW_WIDTH, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, - 1, SDL_RENDERER_ACCELERATED);
     tex = SDL_CreateTextureFromSurface(renderer, 0);
 }
@@ -68,7 +68,7 @@ void initPoint(struct bound *boundList, int nodeCount, struct node *nodeList)
     graphicPoints = (SDL_Rect *) malloc(sizeof(SDL_Rect) * nodeCount);
     for (int i = 0; i < nodeCount; ++ i)
     {
-        graphicPoints[i].x = (int) floor((boundList->maxLon - nodeList[i].lon) * rateX) - delta;
+        graphicPoints[i].x = (int) floor((nodeList[i].lon - boundList->minLon) * rateX) - delta;
         graphicPoints[i].y = (int) floor((boundList->maxLat - nodeList[i].lat) * rateY) - delta;
         graphicPoints[i].w = RECT_WIDTH;
         graphicPoints[i].h = RECT_HEIGHT;
@@ -136,7 +136,7 @@ void drawMap(struct bound *boundList, struct link *linkList,
         }
     }
     SDL_RenderPresent(renderer);
-    SDL_Delay(1000);
+    SDL_Delay(60000);
 }
 
 int routeShown(struct bound *boundList, struct link *linkList, struct node *nodeList, struct edge *edgeList,
