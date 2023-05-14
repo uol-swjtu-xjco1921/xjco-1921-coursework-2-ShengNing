@@ -173,7 +173,6 @@ int main(int argc, char **argv)
         }
     }
     freeData(&linkList, &nodeList, &wayList, &geomList, &edgeList, &head);
-
-
+    
     return 0;
 }
