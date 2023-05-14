@@ -34,7 +34,7 @@ struct geom
 struct edge
 {
     long id;
-    long to, nxt;
+    int to, nxt;
     double length;
 };
 

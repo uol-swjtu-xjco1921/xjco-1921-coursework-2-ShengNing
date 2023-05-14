@@ -17,6 +17,8 @@
 
 #define EXIT_UNKNOWN_NODE 4
 
+#define EXIT_UNAPPROACHABLE_NODES_PAIR 5
+
 #define EXIT_Extinct_Error 100
 
 // Successful
