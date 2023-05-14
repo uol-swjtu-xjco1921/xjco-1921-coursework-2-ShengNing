@@ -39,7 +39,7 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
         if (i + 1 < (countList->links))
             if ((*linkList + i)->id == (*linkList + i + 1)->id)
                 return EXIT_REPEAT_ID;
-        
+
         int node1Number, node2Number;
         node1Number = findNodeIndex(*nodeList, countList->nodes, (*linkList + i)->node1);
         node2Number = findNodeIndex(*nodeList, countList->nodes, (*linkList + i)->node2);
@@ -83,7 +83,7 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
                 return EXIT_REPEAT_ID;
         int geomNumber = findWayOrGeomIndex(*geomIndex, countList->geoms, *(*geomIndex + i));
         for (int j = 0; j < (*geomList + geomNumber)->size; ++ j)
-        {
+        {// fix: *
             int nodeNumber = findNodeIndex(*nodeList, countList->nodes, ((*geomList + geomNumber)->nodes[j]));
             if (nodeNumber == - 1)
                 return EXIT_UNKNOWN_NODE;
@@ -92,25 +92,57 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
     return EXIT_NO_ERRORS;
 }
 
-void routeInit()
+void routeInit(struct link **linkList, struct node **nodeList,
+        struct edge **edgeList, int **head, struct count *countList, int isSpeed)
 {
 
+    int linkNumber = findLinkIndex(*linkList, countList->links, (*edgeList)->id);
+    // nowType == 0: length
+    // nowType == 1: speed
+    int nowType = (*linkList + linkNumber)->length == (*edgeList)->id);
+
+    if((isSpeed ^ nowType )== 0)
+    {
+        return ;
+    }
+
+    if(isSpeed)
+    {
+        for(int i=0;i<(countList->edges);++i)
+        {
+            int linkNumber = findLinkIndex(*linkList, countList->links, (*edgeList+i)->id);
+            (*edgeList)->length /= (*linkList + linkNumber)->speedLimit;
+        }
+    }
+
+    else
+    {
+        for(int i=0;i<(countList->edges);++i)
+        {
+            int linkNumber = findLinkIndex(*linkList, countList->links, (*edgeList+i)->id);
+            (*edgeList)->length = (*linkList + linkNumber)->length;
+        }
+    }
 }
 
-void initSpeed()
+void initSpeed(struct link **linkList, struct count *countList)
 {
-
+    for(int i=0;i<(countList->links);++i)
+    {
+        // speedLimit is initially set as 60.0 km/h.
+        (*linkList + i)->speedLimit = 60.0;
+    }
 }
 
 void addEdge(struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink)
 {
-    
+
     int node1Index = findNodeIndex(*nodeList, countList->nodes, addedLink->node1),
             node2Index = findNodeIndex(*nodeList, countList->nodes, addedLink->node2);
-    
+
     struct edge tmpEdge1 = {addedLink->id, node2Index, head[node1Index], addedLink->length};
     edgeList[countList->edges] = tmpEdge1, head[node1Index] = countList->edges;
-    
+
     struct edge tmpEdge2 = {addedLink->id, node1Index, head[node2Index], addedLink->length};
     edgeList[countList->edges + 1] = tmpEdge2, head[node2Index] = countList->edges + 1;
 }
@@ -123,7 +155,7 @@ void dealEdges(struct link **linkList, struct node **nodeList,
     {
         int wayNumber = findWayOrGeomIndex(*wayIndex, countList->ways, (*linkList + i)->way);
         if (wayNumber == - 1) continue;
-        
+
         *edgeList = realloc(*edgeList, (countList->edges + 2) * sizeof(struct edge));
         addEdge(*edgeList, nodeList, *head, countList, (*linkList + i));
     }

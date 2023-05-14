@@ -17,10 +17,6 @@
 
 #define EXIT_UNKNOWN_NODE 4
 
-#define EXIT_UNKNOWN_WAY 5
-
-#define EXIT_UNMATCHED_LENGTH 6
-
 #define EXIT_Extinct_Error 100
 
 // Successful

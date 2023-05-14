@@ -6,8 +6,8 @@
 
 void initSearch(int num);
 
-void dijkstra(struct edge *edgeList, int *head, struct count *countList, int *pastNode,
+void dijkstra(struct edge *edgeList, int *head, struct count *countList, int *pastNodes, struct node **nodeList,
               long startNode, long endNode, char *POI);
 
-void search(struct edge *edgeList, int *head, int *pastNode, double nowDis,
+void search(struct edge *edgeList, int *head, int *pastNodes, double nowDis,
             int nowNode, int endIndex, char *POI, int flag);

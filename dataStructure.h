@@ -7,7 +7,7 @@ struct link
     long node1, node2;
     long way;
     int totalPOI;
-    double length, veg, arch, land;
+    double length, veg, arch, land, speedLimit;
     char (*POI)[100];
 };
 
@@ -35,7 +35,7 @@ struct edge
 {
     long id;
     long to, nxt;
-    double length, speedLimit;
+    double length;
 };
 
 struct count

@@ -100,7 +100,8 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
     }
     
     dealEdges(linkList, nodeList, &wayIndex, edgeList, head, countList);
-    
+    initSpeed(linkList, countList);
+
     free(wayIndex);
     free(geomIndex);
     
