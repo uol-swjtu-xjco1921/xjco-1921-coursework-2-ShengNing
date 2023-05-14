@@ -90,6 +90,7 @@ int main(int argc, char **argv)
                 printf("%d: %ld ", i + 1, nodeList[pastNodes[i]].id);
             }
             printf("\n");
+            routeShown(&boundData, linkList, nodeList, edgeList, geomList, &countList, pastNodes, nodeCount);
             printf("Type any to continue.");
             scanf("%s", input);
         }
@@ -126,6 +127,7 @@ int main(int argc, char **argv)
                 printf("%d: %ld ", i + 1, nodeList[pastNodes[i]].id);
             }
             printf("\n");
+            routeShown(&boundData, linkList, nodeList, edgeList, geomList, &countList, pastNodes, nodeCount);
             printf("Type any to continue.");
             scanf("%s", input);
         }
@@ -165,11 +167,13 @@ int main(int argc, char **argv)
                 printf("%d: %ld ", i + 1, nodeList[pastNodes[i]].id);
             }
             printf("\n");
+            routeShown(&boundData, linkList, nodeList, edgeList, geomList, &countList, pastNodes, nodeCount);
             printf("Type any to continue.");
             scanf("%s", input);
         }
     }
     freeData(&linkList, &nodeList, &wayList, &geomList, &edgeList, &head);
-    
+
+
     return 0;
 }

@@ -12,4 +12,4 @@ clean:
 	$(CXX) -c $(CFLAGS) -I. $< -o $@
 
 routeDealing: $(OBJT)
-	$(CXX) $(CFLAGS) -o routeDealing $(OBJT)
+	$(CXX) $(CFLAGS) -o routeDealing $(OBJT) `sdl2-config --cflags --libs`
