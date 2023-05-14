@@ -7,7 +7,6 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
     FILE *inputFile = fopen(filename, "r");
     if (inputFile == NULL)
     {
-        reportErr(EXIT_BAD_INPUT_FILE, filename);
         return EXIT_BAD_INPUT_FILE;
     }
     
@@ -77,27 +76,47 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
         {
             fclose(inputFile);
             free(inputStr);
-            reportErr(flag, filename);
             return flag;
         }
         
     }
-    
-    dealEdges(linkList, nodeList, wayList, edgeList, head, countList);
-    
     free(inputStr);
+    
+    long *wayIndex, *geomIndex;
+    wayIndex = malloc((countList->ways + 1) * sizeof(long));
+    geomIndex = malloc((countList->geoms + 1) * sizeof(long));
+    
+    for (int i = 0; i < (countList->ways); ++ i) wayIndex[i] = (*wayList + i)->id;
+    for (int i = 0; i < (countList->geoms); ++ i) geomIndex[i] = (*geomList + i)->id;
+    
+    sortData(linkList, nodeList, &wayIndex, &geomIndex, countList);
+    
+    int returnValue = detectData(linkList, nodeList, wayList, geomList, countList, &wayIndex, &geomIndex);
+    if (returnValue)
+    {
+        free(wayIndex);
+        free(geomIndex);
+        return returnValue;
+    }
+    
+    dealEdges(linkList, nodeList, &wayIndex, edgeList, head, countList);
+    initSpeed(linkList, countList);
+
+    free(wayIndex);
+    free(geomIndex);
+    
     return EXIT_NO_ERRORS;
 }
 
 void freeData(struct link **linkList, struct node **nodeList, struct way **wayList,
               struct geom **geomList, struct edge **edgeList, int **head)
 {
-    free(linkList);
-    free(nodeList);
-    free(wayList);
-    free(geomList);
-    free(edgeList);
-    free(head);
+    free(*linkList);
+    free(*nodeList);
+    free(*wayList);
+    free(*geomList);
+    free(*edgeList);
+    free(*head);
 }
 
 void initData(struct link **linkList, struct node **nodeList, struct way **wayList,
@@ -409,7 +428,7 @@ int readWay(char *inputStr, struct way *tmpWay)
             }
             ++ tmpStr;
             tmpWay->nodes = realloc(tmpWay->nodes, (tmpWay->size + 1) * sizeof(long));
-            tmpWay->nodes[tmpWay->size] = strtol(tmpStr, NULL, 10);
+            *(tmpWay->nodes + tmpWay->size) = strtol(tmpStr, NULL, 10);
             tmpWay->size += 1;
         }
         
@@ -461,3 +480,4 @@ int readGeom(char *inputStr, struct geom *tmpGeom)
     }
     return EXIT_NO_ERRORS;
 }
+

@@ -9,7 +9,7 @@ clean:
 	rm -rf *.o ${EXE}
 
 *.o: *.c
-	$(CC) -c $(CFLAGS) -I. $< -o $@
+	$(CXX) -c $(CFLAGS) -I. $< -o $@
 
 routeDealing: $(OBJT)
-	$(CC) $(CFLAGS) -o routeDealing $(OBJT)
+	$(CXX) $(CFLAGS) -o routeDealing $(OBJT)

@@ -13,7 +13,11 @@
 // Reading in data failed
 #define EXIT_Bad_Data 2
 
-#define EXIT_EXTRA_MEMORY 3
+#define EXIT_REPEAT_ID 3
+
+#define EXIT_UNKNOWN_NODE 4
+
+#define EXIT_UNAPPROACHABLE_NODES_PAIR 5
 
 #define EXIT_Extinct_Error 100
 

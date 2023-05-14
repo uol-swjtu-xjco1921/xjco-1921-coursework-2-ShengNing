@@ -28,3 +28,7 @@ int addGeom(struct geom *geomList, struct count *countList, struct geom *addedGe
     return EXIT_NO_ERRORS;
 }
 
+void editAttribute(struct link *linkList, int index, char *attStr, double value)
+{
+
+}

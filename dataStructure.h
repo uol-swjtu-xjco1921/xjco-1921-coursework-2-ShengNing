@@ -7,7 +7,7 @@ struct link
     long node1, node2;
     long way;
     int totalPOI;
-    double length, veg, arch, land;
+    double length, veg, arch, land, speedLimit;
     char (*POI)[100];
 };
 
@@ -34,11 +34,8 @@ struct geom
 struct edge
 {
     long id;
-    long to, nxt;
-    long way;
-    int totalPOI;
-    double length, speedLimit;
-    char **POI;
+    int to, nxt;
+    double length;
 };
 
 struct count
@@ -50,5 +47,6 @@ struct bound
 {
     double minLat, maxLat, minLon, maxLon;
 };
+
 
 #endif //XJCO_1921_COURSEWORK_2_SHENGNING_DATASTRUCTURE_H

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <string.h>
 #include "errReport.h"
 #include "dataStructure.h"
 
@@ -10,3 +11,5 @@ int addNode(struct node *nodeList, struct count *countList, struct node *addedNo
 int addWay(struct way *wayList, struct count *countList, struct way *addedWay);
 
 int addGeom(struct geom *geomList, struct count *countList, struct geom *addedGeom);
+
+void editAttribute(struct link *linkList, int index, char *attStr, double value);
