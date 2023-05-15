@@ -33,6 +33,8 @@
 
 #define EXIT_ATTRIBUTES_LIMIT 12
 
+#define EXIT_POI_LIMIT 13
+
 #define EXIT_Extinct_Error 100
 
 // Successful

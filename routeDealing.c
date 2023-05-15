@@ -36,7 +36,6 @@ int main(int argc, char **argv)
     
     initSpeed(&linkList, &countList);
     
-    
     while (1)
     {
         char input[100];

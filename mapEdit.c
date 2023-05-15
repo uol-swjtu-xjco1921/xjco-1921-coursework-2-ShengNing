@@ -44,7 +44,7 @@ int editAttribute(struct link *linkList, int index)
     
     if (opt == 1)
     {
-        if (linkList[index].attributeCount >= 15)
+        if (linkList[index].attributeCount >= attributeLimit)
             return EXIT_ATTRIBUTES_LIMIT;
         printf("Enter the attribute name you want to add.\n");
         scanf("%s", input);
@@ -62,7 +62,7 @@ int editAttribute(struct link *linkList, int index)
         
         linkList[index].attributeCount ++;
         strcpy(linkList[index].attributeName[linkList[index].attributeCount - 1], input);
-    
+        
         printf("Enter the value you want to edit.\n");
         scanf("%s", input);
         linkList[index].attribute[linkList[index].attributeCount - 1] = strtod(input, NULL);
@@ -77,9 +77,11 @@ int editAttribute(struct link *linkList, int index)
     {
         printf("Enter the POI value you want to add.\n");
         scanf("%s", input);
-        linkList[index].totalPOI += 1;
+        linkList[index].totalPOI ++;
+        if (linkList[index].totalPOI > attributeLimit)
+            return EXIT_POI_LIMIT;
         
-        for (int i = 0; i < strlen(input); ++ i) linkList[index].POI[linkList->totalPOI - 1][i] = input[i];
+        strcpy(linkList[index].POI[linkList[index].totalPOI - 1], input);
         printf("%s\n", linkList[index].POI[linkList->totalPOI - 1]);
         return EXIT_NO_ERRORS;
     }

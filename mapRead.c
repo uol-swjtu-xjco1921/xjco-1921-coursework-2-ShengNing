@@ -93,20 +93,16 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
     
     sortData(linkList, nodeList, &wayIndexUnion, &geomIndexUnion, countList);
     
-    int returnValue = detectData(boundData, linkList, nodeList, wayList, geomList, countList, &wayIndexUnion, &geomIndexUnion);
+    int returnValue = detectData(boundData, linkList, nodeList, wayList, geomList, countList, &wayIndexUnion,
+                                 &geomIndexUnion);
     if (returnValue)
     {
-        free(wayIndexUnion);
-        free(geomIndexUnion);
         return returnValue;
     }
-    
+
     dealEdges(linkList, nodeList, &wayIndexUnion, edgeList, head, countList);
     initSpeed(linkList, countList);
-    
-    free(wayIndexUnion);
-    free(geomIndexUnion);
-    
+
     return EXIT_NO_ERRORS;
 }
 
@@ -119,6 +115,8 @@ void freeData(struct link **linkList, struct node **nodeList, struct way **wayLi
     free(*geomList);
     free(*edgeList);
     free(*head);
+    free(wayIndexUnion);
+    free(geomIndexUnion);
 }
 
 void initData(struct link **linkList, struct node **nodeList, struct way **wayList,
@@ -209,7 +207,7 @@ int readLink(char *inputStr, struct link *tmpLink)
 {
     tmpLink->totalPOI = 0;
     tmpLink->attributeCount = 0;
-    //(tmpLink->POI) = malloc(0 * sizeof(char *));
+    tmpLink->node1 = 10000000000;
     
     char *divStr;
     divStr = strtok(inputStr, " ");
@@ -281,11 +279,12 @@ int readLink(char *inputStr, struct link *tmpLink)
                 while (poiStr != NULL)
                 {
                     if (poiStr[0] == ';') break;
-                    if (strlen(poiStr) > 100)
+                    if (strlen(poiStr) > maxPOILength)
                     {
                         return EXIT_Bad_Data;
                     }
-                    
+                    if (tmpLink->totalPOI >= attributeLimit)
+                        return EXIT_POI_LIMIT;
                     strcpy(*(tmpLink->POI + tmpLink->totalPOI), poiStr);
                     tmpLink->totalPOI += 1;
                     poiStr = strtok(NULL, ",");
@@ -296,8 +295,9 @@ int readLink(char *inputStr, struct link *tmpLink)
         else if (memcmp(divStr, "<link", 5) != 0)
         {
             ++ tmpLink->attributeCount;
-            if(tmpLink->attributeCount>15)
+            if (tmpLink->attributeCount > attributeLimit)
                 return EXIT_ATTRIBUTES_LIMIT;
+            
             char *tmpStr;
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
@@ -306,6 +306,12 @@ int readLink(char *inputStr, struct link *tmpLink)
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
+            
+            if (strlen(divStr) - strlen((tmpStr)) - 1 > maxAttNameLength)
+            {
+                return EXIT_Bad_Data;
+            }
+            
             for (int i = 0; i < strlen(divStr) - strlen((tmpStr)) - 1; ++ i)
                 tmpLink->attributeName[tmpLink->attributeCount - 1][i] = divStr[i];
             tmpLink->attribute[tmpLink->attributeCount - 1] = strtod(tmpStr, NULL);
@@ -450,10 +456,10 @@ int readGeom(char *inputStr, struct geom *tmpGeom)
     return EXIT_NO_ERRORS;
 }
 
-int wayPending(struct way **wayList, struct count *countList,long nodeId, long linkId)
+int wayPending(struct way **wayList, struct count *countList, long nodeId, long linkId)
 {
     int wayNumber = findWayOrGeomIndex(wayIndexUnion, countList->ways, linkId);
-    if(wayNumber == -1) return -1;
+    if (wayNumber == - 1) return - 1;
     wayList[wayNumber]->nodes = realloc(wayList[wayNumber]->nodes, (wayList[wayNumber]->size + 1) * sizeof(long));
     *(wayList[wayNumber]->nodes + wayList[wayNumber]->size) = nodeId;
     wayList[wayNumber]->size += 1;
