@@ -28,7 +28,43 @@ int addGeom(struct geom *geomList, struct count *countList, struct geom *addedGe
     return EXIT_NO_ERRORS;
 }
 
-void editAttribute(struct link *linkList, int index, char *attStr, double value)
+int editAttribute(struct link *linkList, int index)
 {
-
+    char input[maxAttNameLength];
+    printf("Enter the attribute you want to edit.\n");
+    scanf("%s", input);
+    
+    if (memcmp(input, "POI", 3) == 0)
+    {
+        printf("Enter the POI value you want to add.\n");
+        scanf("%s", input);
+        linkList[index].totalPOI += 1;
+        
+        for(int i=0;i< strlen(input);++i) linkList[index].POI[linkList->totalPOI - 1][i] = input[i];
+        printf("%s\n", linkList[index].POI[linkList->totalPOI - 1]);
+        return EXIT_NO_ERRORS;
+    }
+    
+    if (memcmp(input, "SpeedLimit", 10) == 0)
+    {
+        printf("Enter the SpeedLimit you want to edit.\n");
+        scanf("%s", input);
+        linkList[index].speedLimit = strtod(input, NULL);
+        return EXIT_NO_ERRORS;
+    }
+    
+    for (int i = 0; i < linkList[index].attributeCount; ++ i)
+    {
+        int length = strlen(linkList[index].attributeName[i]) < strlen(input) ? (int) strlen(linkList[index].attributeName[i])
+                                                                        : (int) strlen(input);
+        if (memcmp(input, linkList[index].attributeName[i], length) == 0)
+        {
+            printf("Enter the %s value you want to edit.\n", linkList[index].attributeName[i]);
+            scanf("%s", input);
+            linkList[index].attribute[i] = strtod(input, NULL);
+            return EXIT_NO_ERRORS;
+        }
+    }
+    
+    return EXIT_NOT_APPEARED_ATTRIBUTE;
 }

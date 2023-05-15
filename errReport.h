@@ -13,11 +13,23 @@
 // Reading in data failed
 #define EXIT_Bad_Data 2
 
-#define EXIT_REPEAT_ID 3
+#define EXIT_BAD_BOUNDING 3
 
-#define EXIT_UNKNOWN_NODE 4
+#define EXIT_TOO_LONG_POI 4
 
-#define EXIT_UNAPPROACHABLE_NODES_PAIR 5
+#define EXIT_TOO_LONG_ATT 5
+
+#define EXIT_REPEAT_ID 6
+
+#define EXIT_UNKNOWN_NODE 7
+
+#define EXIT_UNKNOWN_LINK 8
+
+#define EXIT_UNAPPROACHABLE_NODES_PAIR 9
+
+#define EXIT_NOT_APPEARED_ATTRIBUTE 10
+
+#define EXIT_ATTRIBUTES_LIMIT 11
 
 #define EXIT_Extinct_Error 100
 

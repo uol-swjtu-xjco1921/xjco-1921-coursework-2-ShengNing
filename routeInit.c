@@ -30,9 +30,24 @@ void sortData(struct link **linkList, struct node **nodeList, long **wayIndex,
     qsort(*geomIndex, countList->geoms, sizeof(long), cmpWayAndGeom);
 }
 
-int detectData(struct link **linkList, struct node **nodeList, struct way **wayList,
+int checkLink(struct node **nodeList, struct count *countList, struct link tmpLink)
+{
+    int node1Number, node2Number;
+    node1Number = findNodeIndex(*nodeList, countList->nodes, tmpLink.node1);
+    node2Number = findNodeIndex(*nodeList, countList->nodes, tmpLink.node2);
+    
+    if (node1Number == - 1 || node2Number == - 1)
+        return EXIT_UNKNOWN_NODE;
+    return EXIT_NO_ERRORS;
+}
+
+int detectData(struct bound *boundData, struct link **linkList, struct node **nodeList, struct way **wayList,
                struct geom **geomList, struct count *countList, long **wayIndex, long **geomIndex)
 {
+    // verify bounding
+    if (boundData->minLat > boundData->maxLat || boundData->minLon > boundData->maxLon)
+        return EXIT_BAD_BOUNDING;
+    
     // verify link
     for (int i = 0; i < (countList->links); ++ i)
     {
@@ -40,19 +55,9 @@ int detectData(struct link **linkList, struct node **nodeList, struct way **wayL
             if ((*linkList + i)->id == (*linkList + i + 1)->id)
                 return EXIT_REPEAT_ID;
         
-        int node1Number, node2Number;
-        node1Number = findNodeIndex(*nodeList, countList->nodes, (*linkList + i)->node1);
-        node2Number = findNodeIndex(*nodeList, countList->nodes, (*linkList + i)->node2);
-        if (node1Number == - 1 || node2Number == - 1)
-            return EXIT_UNKNOWN_NODE;
-
-//        if ((*linkList + i)->length - distance(*(*nodeList + node1Number), *(*nodeList + node2Number)) > 1e-6)
-//        {
-//            printf("%ld %ld\n",(*linkList + i)->id, (*nodeList + node2Number)->id);
-//            printf("%lf %lf\n", (*linkList + i)->length, distance(*(*nodeList + node1Number), *(*nodeList + node2Number)));
-//            printf("%lf %lf %lf %lf\n", (*nodeList + node1Number)->lat, (*nodeList + node1Number)->lon, (*nodeList + node2Number)->lat, (*nodeList + node2Number)->lon);
-//            return EXIT_UNMATCHED_LENGTH;
-//        }
+        int returnValue = checkLink(nodeList, countList, *(*linkList + i));
+        if (returnValue)
+            return returnValue;
     }
     // verify node
     for (int i = 0; i < (countList->nodes); ++ i)
@@ -135,7 +140,8 @@ void initSpeed(struct link **linkList, struct count *countList)
     }
 }
 
-void addEdge(int linkNumber, struct edge *edgeList, struct node **nodeList, int *head, struct count *countList, struct link *addedLink)
+void addEdge(int linkNumber, struct edge *edgeList, struct node **nodeList, int *head, struct count *countList,
+             struct link *addedLink)
 {
     
     int node1Index = findNodeIndex(*nodeList, countList->nodes, addedLink->node1),
@@ -160,7 +166,7 @@ void dealEdges(struct link **linkList, struct node **nodeList,
         int linkNumber = findLinkIndex(*linkList, countList->links, (*linkList + i)->id);
         
         *edgeList = realloc(*edgeList, (countList->edges + 2) * sizeof(struct edge));
-        addEdge(linkNumber,*edgeList, nodeList, *head, countList, (*linkList + i));
+        addEdge(linkNumber, *edgeList, nodeList, *head, countList, (*linkList + i));
         countList->edges += 2;
         
     }

@@ -6,14 +6,14 @@ struct link
     long id;
     long node1, node2;
     long way;
-    int totalPOI;
     double length, veg, arch, land, speedLimit;
     
     int attributeCount;
-    char (*attributeName)[15];
+    char attributeName[15][20];
     double attribute[15];
     
-    char (*POI)[100];
+    int totalPOI;
+    char POI[10][100];
 };
 
 struct node
@@ -54,5 +54,7 @@ struct bound
     double minLat, maxLat, minLon, maxLon;
 };
 
+#define maxPOILength 100
+#define maxAttNameLength 20
 
 #endif //XJCO_1921_COURSEWORK_2_SHENGNING_DATASTRUCTURE_H

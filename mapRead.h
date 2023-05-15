@@ -26,3 +26,5 @@ int readNode(char *inputStr, struct node *tmpNode);
 int readWay(char *inputStr, struct way *tmpWay);
 
 int readGeom(char *inputStr, struct geom *tmpGeom);
+
+int wayPending(struct way **wayList, struct count *countList,long nodeId, long linkId);

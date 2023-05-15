@@ -1,6 +1,6 @@
 #include "routeShown.h"
 
-const int WINDOW_WIDTH = 720, WINDOW_HEIGHT = 1280;
+const int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 1920;
 const int RECT_WIDTH = 6, RECT_HEIGHT = 6;
 const int delta = 3;
 
@@ -60,16 +60,16 @@ void initSDL()
     tex = SDL_CreateTextureFromSurface(renderer, 0);
 }
 
-void initPoint(struct bound *boundList, int nodeCount, struct node *nodeList)
+void initPoint(struct bound *boundData, int nodeCount, struct node *nodeList)
 {
-    rateX = WINDOW_HEIGHT / (boundList->maxLon - boundList->minLon);
-    rateY = WINDOW_WIDTH / (boundList->maxLat - boundList->minLat);
+    rateX = WINDOW_HEIGHT / (boundData->maxLon - boundData->minLon);
+    rateY = WINDOW_WIDTH / (boundData->maxLat - boundData->minLat);
     
     graphicPoints = (SDL_Rect *) malloc(sizeof(SDL_Rect) * nodeCount);
     for (int i = 0; i < nodeCount; ++ i)
     {
-        graphicPoints[i].x = (int) floor((nodeList[i].lon - boundList->minLon) * rateX) - delta;
-        graphicPoints[i].y = (int) floor((boundList->maxLat - nodeList[i].lat) * rateY) - delta;
+        graphicPoints[i].x = (int) floor((nodeList[i].lon - boundData->minLon) * rateX) - delta;
+        graphicPoints[i].y = (int) floor((boundData->maxLat - nodeList[i].lat) * rateY) - delta;
         graphicPoints[i].w = RECT_WIDTH;
         graphicPoints[i].h = RECT_HEIGHT;
     }
@@ -83,7 +83,7 @@ void closeSDL()
     SDL_Quit();
 }
 
-void drawMap(struct bound *boundList, struct link *linkList,
+void drawMap(struct bound *boundData, struct link *linkList,
              struct node *nodeList, struct edge *edgeList, struct geom *geomList, struct count *countList,
              const int *pastNode, int nodeCount)
 {
@@ -119,6 +119,11 @@ void drawMap(struct bound *boundList, struct link *linkList,
     {
         int node1Index = pastNode[i - 1],
                 node2Index = pastNode[i];
+        for (int size = 0; size <= 3; ++ size)
+        {
+            sdl_ellipse(renderer, graphicPoints[node1Index].x + delta, graphicPoints[node1Index].y + delta, size, size);
+            sdl_ellipse(renderer, graphicPoints[node2Index].x + delta, graphicPoints[node2Index].y + delta, size, size);
+        }
         SDL_RenderDrawLine(renderer, graphicPoints[node1Index].x + delta, graphicPoints[node1Index].y + delta,
                            graphicPoints[node2Index].x + delta, graphicPoints[node2Index].y + delta);
     }
@@ -139,15 +144,35 @@ void drawMap(struct bound *boundList, struct link *linkList,
     SDL_Delay(60000);
 }
 
-int routeShown(struct bound *boundList, struct link *linkList, struct node *nodeList, struct edge *edgeList,
+int routeShown(struct bound *boundData, struct link *linkList, struct node *nodeList, struct edge *edgeList,
                struct geom *geomList, struct count *countList, int *pastNode, int nodeCount)
 {
     initSDL();
     
-    initPoint(boundList, countList->nodes, nodeList);
+    initPoint(boundData, countList->nodes, nodeList);
     
-    drawMap(boundList, linkList, nodeList, edgeList, geomList, countList, pastNode, nodeCount);
+    drawMap(boundData, linkList, nodeList, edgeList, geomList, countList, pastNode, nodeCount);
     
     closeSDL();
     return EXIT_NO_ERRORS;
+}
+
+void showLink(struct link *tmpLink)
+{
+    printf("id: %ld\n", tmpLink->id);
+    printf("node: %ld, node: %ld\n", tmpLink->node1, tmpLink->node2);
+    printf("way: %ld\n", tmpLink->way);
+    printf("length: %lf\n", tmpLink->length);
+    printf("SpeedLimit: %lf(KM/H)\n", tmpLink->speedLimit);
+    
+    for(int i=0;i<tmpLink->attributeCount;++i)
+        printf("%s: %lf\n", tmpLink->attributeName[i], tmpLink->attribute[i]);
+    
+    printf("POI:");
+    for (int i = 0; i < tmpLink->totalPOI; ++ i)
+    {
+        printf("%s",tmpLink->POI[i]);
+        if(i<tmpLink->totalPOI-1) printf(",");
+    }
+    printf(";\n");
 }

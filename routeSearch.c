@@ -12,7 +12,7 @@ void initSearch(int num)
     for (int i = 0; i < num; ++ i)
     {
         visitNode[i] = 0;
-        dis[i] = 1e9;
+        dis[i] = 1000000000;
     }
 }
 
@@ -35,7 +35,7 @@ int dijkstra(struct link *linkList, struct edge *edgeList, const int *head, stru
     pastList[0] = startNumber;
     visitNode[0] = 1;
     
-    int flag = (POI == NULL);
+    int flag = (POI != NULL);
     search(linkList, edgeList, head, pastList, 1, 0, startNumber, endNumber, POI, flag);
     
     if (ansNodes == NULL)
@@ -78,9 +78,11 @@ void search(struct link *linkList, struct edge *edgeList, const int *head, int *
         {
             for (int j = 0; j < linkList[edgeList[i].index].totalPOI; ++ j)
             {
-                if (strcmp(linkList[edgeList[i].index].POI[j], POI) == 0)
+                if (strlen(POI) != strlen(linkList[edgeList[i].index].POI[j])) continue;
+                if (memcmp(linkList[edgeList[i].index].POI[j], POI, strlen(POI)) == 0)
                 {
                     flag = 1;
+                    break;
                 }
             }
         }

@@ -18,3 +18,5 @@ void drawMap(struct bound *boundList, struct link *linkList,
 
 int routeShown(struct bound *boundList, struct link *linkList, struct node *nodeList, struct edge *edgeList,
                struct geom *geomList, struct count *countList, int *pastNode, int nodeCount);
+
+void showLink(struct link *tmpLink);
