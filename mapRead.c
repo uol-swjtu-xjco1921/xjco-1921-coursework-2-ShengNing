@@ -99,10 +99,10 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
     {
         return returnValue;
     }
-
+    
     dealEdges(linkList, nodeList, &wayIndexUnion, edgeList, head, countList);
     initSpeed(linkList, countList);
-
+    
     return EXIT_NO_ERRORS;
 }
 

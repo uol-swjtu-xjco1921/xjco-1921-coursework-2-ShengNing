@@ -165,14 +165,14 @@ void showLink(struct link *tmpLink)
     printf("length: %lf\n", tmpLink->length);
     printf("SpeedLimit: %lf(KM/H)\n", tmpLink->speedLimit);
     
-    for(int i=0;i<tmpLink->attributeCount;++i)
+    for (int i = 0; i < tmpLink->attributeCount; ++ i)
         printf("%s: %lf\n", tmpLink->attributeName[i], tmpLink->attribute[i]);
     
     printf("POI:");
     for (int i = 0; i < tmpLink->totalPOI; ++ i)
     {
-        printf("%s",tmpLink->POI[i]);
-        if(i<tmpLink->totalPOI-1) printf(",");
+        printf("%s", tmpLink->POI[i]);
+        if (i < tmpLink->totalPOI - 1) printf(",");
     }
     printf(";\n");
 }

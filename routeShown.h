@@ -4,7 +4,7 @@
 #include "errReport.h"
 #include "routeInit.h"
 
-void sdl_ellipse(SDL_Renderer* r, int x0, int y0, int radiusX, int radiusY);
+void sdl_ellipse(SDL_Renderer *r, int x0, int y0, int radiusX, int radiusY);
 
 void initSDL();
 

@@ -59,5 +59,4 @@ struct bound
 };
 
 
-
 #endif //XJCO_1921_COURSEWORK_2_SHENGNING_DATASTRUCTURE_H

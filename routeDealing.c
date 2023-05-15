@@ -228,20 +228,23 @@ int main(int argc, char **argv)
                     scanf("%s", input);
                     continue;
                 }
+                
                 linkList = realloc(linkList, (countList.links + 1) * sizeof(struct link));
                 addLink(linkList, &countList, tmpLink);
                 qsort(linkList, countList.links, sizeof(linkList[0]), cmpLink);
                 
                 int tmpValue = 0;
-                tmpValue = wayPending(&wayList, &countList, tmpLink->node1, tmpLink->id);
+                wayPending(&wayList, &countList, tmpLink->node1, tmpLink->id);
                 tmpValue = wayPending(&wayList, &countList, tmpLink->node2, tmpLink->id);
                 
                 if (tmpValue == 0)
                 {
                     int linkNumber = findLinkIndex(linkList, countList.links, tmpLink->id);
+                    
                     edgeList = realloc(edgeList, (countList.edges + 2) * sizeof(struct edge));
                     addEdge(linkNumber, edgeList, &nodeList, head, &countList, tmpLink);
                     countList.edges += 2;
+                    
                 }
                 showLink(tmpLink);
                 printf("Type any to continue.");
