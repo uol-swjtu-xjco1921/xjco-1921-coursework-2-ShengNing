@@ -6328,7 +6328,7 @@
 <way id=-7640 node=-2398 node=-2406 /way>
 <way id=-7638 node=-2392 node=-2404 /way>
 <way id=-7636 node=-2400 node=-2402 /way>
-<way id=-7634 node=247293216 node=-2382 /way>
+<way id=-7634 node=247293216 node=-2382 /way>`sdl2-config --cflags --libs`
 <way id=-7632 node=-2378 node=-2376 /way>
 <way id=-7630 node=-2374 node=-2372 /way>
 <way id=-7628 node=-2370 node=-2368 /way>

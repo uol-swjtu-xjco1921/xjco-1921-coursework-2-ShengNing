@@ -31,7 +31,46 @@ int addGeom(struct geom *geomList, struct count *countList, struct geom *addedGe
 int editAttribute(struct link *linkList, int index)
 {
     char input[maxAttNameLength];
-    printf("Enter the attribute you want to edit.\n");
+    
+    int opt = - 1;
+    while (opt > 2 || opt < 0)
+    {
+        printf("Add the attribute or change the attribute?\n");
+        printf("1.Add the attribute.\n");
+        printf("2.Change the attribute.\n");
+        scanf("%s", input);
+        opt = (int) strtol(input, NULL, 10);
+    }
+    
+    if (opt == 1)
+    {
+        if (linkList[index].attributeCount >= 15)
+            return EXIT_ATTRIBUTES_LIMIT;
+        printf("Enter the attribute name you want to add.\n");
+        scanf("%s", input);
+        
+        for (int i = 0; i < linkList[index].attributeCount; ++ i)
+        {
+            int length = strlen(linkList[index].attributeName[i]) < strlen(input) ? (int) strlen(
+                    linkList[index].attributeName[i])
+                                                                                  : (int) strlen(input);
+            if (memcmp(input, linkList[index].attributeName[i], length) == 0)
+            {
+                return EXIT_REPEAT_ATTRIBUTE;
+            }
+        }
+        
+        linkList[index].attributeCount ++;
+        strcpy(linkList[index].attributeName[linkList[index].attributeCount - 1], input);
+    
+        printf("Enter the value you want to edit.\n");
+        scanf("%s", input);
+        linkList[index].attribute[linkList[index].attributeCount - 1] = strtod(input, NULL);
+        
+        return EXIT_NO_ERRORS;
+    }
+    
+    printf("Enter the attribute value.\n");
     scanf("%s", input);
     
     if (memcmp(input, "POI", 3) == 0)
@@ -40,7 +79,7 @@ int editAttribute(struct link *linkList, int index)
         scanf("%s", input);
         linkList[index].totalPOI += 1;
         
-        for(int i=0;i< strlen(input);++i) linkList[index].POI[linkList->totalPOI - 1][i] = input[i];
+        for (int i = 0; i < strlen(input); ++ i) linkList[index].POI[linkList->totalPOI - 1][i] = input[i];
         printf("%s\n", linkList[index].POI[linkList->totalPOI - 1]);
         return EXIT_NO_ERRORS;
     }
@@ -55,8 +94,9 @@ int editAttribute(struct link *linkList, int index)
     
     for (int i = 0; i < linkList[index].attributeCount; ++ i)
     {
-        int length = strlen(linkList[index].attributeName[i]) < strlen(input) ? (int) strlen(linkList[index].attributeName[i])
-                                                                        : (int) strlen(input);
+        int length = strlen(linkList[index].attributeName[i]) < strlen(input) ? (int) strlen(
+                linkList[index].attributeName[i])
+                                                                              : (int) strlen(input);
         if (memcmp(input, linkList[index].attributeName[i], length) == 0)
         {
             printf("Enter the %s value you want to edit.\n", linkList[index].attributeName[i]);

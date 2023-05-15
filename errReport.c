@@ -11,25 +11,28 @@ void reportErr(int value, char *filename)
             printf("Error: Filed to find input file.\n");
             break;
         case EXIT_TOO_LONG_POI:
-            printf("Error: Exit too long POI, please enter the POI that length under 100.\n");
+            printf("Error: Exist too long POI, please enter the POI that length under 100.\n");
             break;
         case EXIT_TOO_LONG_ATT:
-            printf("Error: Exit too long attribute name, please enter the attribute name that length under 15.\n");
+            printf("Error: Exist too long attribute name, please enter the attribute name that length under 15.\n");
             break;
         case EXIT_BAD_BOUNDING:
             printf("Error: The bounding is read file is paradoxically.\n");
             break;
         case EXIT_REPEAT_ID:
-            printf("Error: Exit repeat id.\n");
+            printf("Error: Exist repeat id.\n");
+            break;
+        case EXIT_REPEAT_ATTRIBUTE:
+            printf("Error: Exist repeat attribute name.\n");
             break;
         case EXIT_UNKNOWN_NODE:
-            printf("Error: Exit unknown node.\n");
+            printf("Error: Exist unknown node.\n");
             break;
         case EXIT_UNKNOWN_LINK:
-            printf("Error: Exit unknown link.\n");
+            printf("Error: Exist unknown link.\n");
             break;
         case EXIT_Bad_Data:
-            printf("Error: Exit bad data.\n");
+            printf("Error: Exist bad data.\n");
             break;
         case EXIT_UNAPPROACHABLE_NODES_PAIR:
             printf("Error: Exit nodes pair could not approachable.\n");

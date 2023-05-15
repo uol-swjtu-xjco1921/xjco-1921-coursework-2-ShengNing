@@ -296,6 +296,8 @@ int readLink(char *inputStr, struct link *tmpLink)
         else if (memcmp(divStr, "<link", 5) != 0)
         {
             ++ tmpLink->attributeCount;
+            if(tmpLink->attributeCount>15)
+                return EXIT_ATTRIBUTES_LIMIT;
             char *tmpStr;
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
