@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
+#include "routeShown.h"
 #include "dataStructure.h"
 #include "routeInit.h"
+
 
 void initSearch(int num);
 

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
 #include "errReport.h"
@@ -12,4 +13,4 @@ int addWay(struct way *wayList, struct count *countList, struct way *addedWay);
 
 int addGeom(struct geom *geomList, struct count *countList, struct geom *addedGeom);
 
-void editAttribute(struct link *linkList, int index, char *attStr, double value);
+int editAttribute(struct link *linkList, int index);

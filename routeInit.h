@@ -14,7 +14,9 @@ int cmpWayAndGeom(const void *a, const void *b);
 void sortData(struct link **linkList, struct node **nodeList, long **wayIndex,
               long **geomIndex, struct count *countList);
 
-int detectData(struct link **linkList, struct node **nodeList, struct way **wayList,
+int checkLink(struct node **nodeList, struct count *countList, struct link tmpLink);
+
+int detectData(struct bound *boundData, struct link **linkList, struct node **nodeList, struct way **wayList,
                struct geom **geomList, struct count *countList, long **wayIndex, long **geomIndex);
 
 void routeInit(struct link **linkList, struct node **nodeList,

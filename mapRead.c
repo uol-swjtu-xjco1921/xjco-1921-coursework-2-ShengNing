@@ -1,5 +1,7 @@
 #include "mapRead.h"
 
+long *wayIndexUnion, *geomIndexUnion;
+
 int readFile(char *filename, struct link **linkList, struct node **nodeList, struct way **wayList,
              struct geom **geomList, struct edge **edgeList, int **head, struct count *countList,
              struct bound *boundData)
@@ -68,6 +70,7 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
                 addGeom(*geomList, countList, tmpGeom);
             }
         }
+        
         free(tmpLink);
         free(tmpNode);
         free(tmpWay);
@@ -82,28 +85,27 @@ int readFile(char *filename, struct link **linkList, struct node **nodeList, str
     }
     free(inputStr);
     
-    long *wayIndex, *geomIndex;
-    wayIndex = malloc((countList->ways + 1) * sizeof(long));
-    geomIndex = malloc((countList->geoms + 1) * sizeof(long));
+    wayIndexUnion = malloc((countList->ways + 1) * sizeof(long));
+    geomIndexUnion = malloc((countList->geoms + 1) * sizeof(long));
     
-    for (int i = 0; i < (countList->ways); ++ i) wayIndex[i] = (*wayList + i)->id;
-    for (int i = 0; i < (countList->geoms); ++ i) geomIndex[i] = (*geomList + i)->id;
+    for (int i = 0; i < (countList->ways); ++ i) wayIndexUnion[i] = (*wayList + i)->id;
+    for (int i = 0; i < (countList->geoms); ++ i) geomIndexUnion[i] = (*geomList + i)->id;
     
-    sortData(linkList, nodeList, &wayIndex, &geomIndex, countList);
+    sortData(linkList, nodeList, &wayIndexUnion, &geomIndexUnion, countList);
     
-    int returnValue = detectData(linkList, nodeList, wayList, geomList, countList, &wayIndex, &geomIndex);
+    int returnValue = detectData(boundData, linkList, nodeList, wayList, geomList, countList, &wayIndexUnion, &geomIndexUnion);
     if (returnValue)
     {
-        free(wayIndex);
-        free(geomIndex);
+        free(wayIndexUnion);
+        free(geomIndexUnion);
         return returnValue;
     }
     
-    dealEdges(linkList, nodeList, &wayIndex, edgeList, head, countList);
+    dealEdges(linkList, nodeList, &wayIndexUnion, edgeList, head, countList);
     initSpeed(linkList, countList);
-
-    free(wayIndex);
-    free(geomIndex);
+    
+    free(wayIndexUnion);
+    free(geomIndexUnion);
     
     return EXIT_NO_ERRORS;
 }
@@ -206,7 +208,8 @@ int readBound(char *inputStr, struct bound *boundData)
 int readLink(char *inputStr, struct link *tmpLink)
 {
     tmpLink->totalPOI = 0;
-    (tmpLink->POI) = malloc(0 * sizeof(char *));
+    tmpLink->attributeCount = 0;
+    //(tmpLink->POI) = malloc(0 * sizeof(char *));
     
     char *divStr;
     divStr = strtok(inputStr, " ");
@@ -220,7 +223,6 @@ int readLink(char *inputStr, struct link *tmpLink)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpLink);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -234,11 +236,11 @@ int readLink(char *inputStr, struct link *tmpLink)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpLink);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
-            if (tmpLink->node1) tmpLink->node2 = strtol(tmpStr, NULL, 10);
+            if (tmpLink->node1 < 10000000000 && tmpLink->node1 > - 10000000000)
+                tmpLink->node2 = strtol(tmpStr, NULL, 10);
             else tmpLink->node1 = strtol(tmpStr, NULL, 10);
         }
         
@@ -248,7 +250,6 @@ int readLink(char *inputStr, struct link *tmpLink)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpLink);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -261,50 +262,10 @@ int readLink(char *inputStr, struct link *tmpLink)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpLink);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
             tmpLink->length = strtod(tmpStr, NULL);
-        }
-        
-        else if (memcmp(divStr, "veg", 3) == 0)
-        {
-            char *tmpStr;
-            tmpStr = memchr(divStr, '=', strlen(divStr));
-            if (tmpStr == NULL)
-            {
-                free(tmpLink);
-                return EXIT_Bad_Data;
-            }
-            ++ tmpStr;
-            tmpLink->veg = strtod(tmpStr, NULL);
-        }
-        
-        else if (memcmp(divStr, "arch", 4) == 0)
-        {
-            char *tmpStr;
-            tmpStr = memchr(divStr, '=', strlen(divStr));
-            if (tmpStr == NULL)
-            {
-                free(tmpLink);
-                return EXIT_Bad_Data;
-            }
-            ++ tmpStr;
-            tmpLink->arch = strtod(tmpStr, NULL);
-        }
-        
-        else if (memcmp(divStr, "land", 4) == 0)
-        {
-            char *tmpStr;
-            tmpStr = memchr(divStr, '=', strlen(divStr));
-            if (tmpStr == NULL)
-            {
-                free(tmpLink);
-                return EXIT_Bad_Data;
-            }
-            ++ tmpStr;
-            tmpLink->land = strtod(tmpStr, NULL);
         }
         
         else if (memcmp(divStr, "POI", 3) == 0)
@@ -320,19 +281,32 @@ int readLink(char *inputStr, struct link *tmpLink)
                 while (poiStr != NULL)
                 {
                     if (poiStr[0] == ';') break;
-                    int maxPOI = 100;
                     if (strlen(poiStr) > 100)
                     {
-                        free(tmpLink);
                         return EXIT_Bad_Data;
                     }
                     
-                    (tmpLink->POI) = realloc(*(tmpLink->POI), (tmpLink->totalPOI + 1) * maxPOI * sizeof(char));
                     strcpy(*(tmpLink->POI + tmpLink->totalPOI), poiStr);
                     tmpLink->totalPOI += 1;
                     poiStr = strtok(NULL, ",");
                 }
             }
+        }
+        
+        else if (memcmp(divStr, "<link", 5) != 0)
+        {
+            ++ tmpLink->attributeCount;
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                printf("%s\n", divStr);
+                return EXIT_Bad_Data;
+            }
+            ++ tmpStr;
+            for (int i = 0; i < strlen(divStr) - strlen((tmpStr)) - 1; ++ i)
+                tmpLink->attributeName[tmpLink->attributeCount - 1][i] = divStr[i];
+            tmpLink->attribute[tmpLink->attributeCount - 1] = strtod(tmpStr, NULL);
         }
         
         divStr = strtok(NULL, " ");
@@ -355,7 +329,6 @@ int readNode(char *inputStr, struct node *tmpNode)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpNode);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -368,7 +341,6 @@ int readNode(char *inputStr, struct node *tmpNode)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpNode);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -381,7 +353,6 @@ int readNode(char *inputStr, struct node *tmpNode)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpNode);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -410,7 +381,6 @@ int readWay(char *inputStr, struct way *tmpWay)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpWay);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -423,7 +393,6 @@ int readWay(char *inputStr, struct way *tmpWay)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpWay);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -454,7 +423,6 @@ int readGeom(char *inputStr, struct geom *tmpGeom)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpGeom);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -467,7 +435,6 @@ int readGeom(char *inputStr, struct geom *tmpGeom)
             tmpStr = memchr(divStr, '=', strlen(divStr));
             if (tmpStr == NULL)
             {
-                free(tmpGeom);
                 return EXIT_Bad_Data;
             }
             ++ tmpStr;
@@ -481,3 +448,12 @@ int readGeom(char *inputStr, struct geom *tmpGeom)
     return EXIT_NO_ERRORS;
 }
 
+int wayPending(struct way **wayList, struct count *countList,long nodeId, long linkId)
+{
+    int wayNumber = findWayOrGeomIndex(wayIndexUnion, countList->ways, linkId);
+    if(wayNumber == -1) return -1;
+    wayList[wayNumber]->nodes = realloc(wayList[wayNumber]->nodes, (wayList[wayNumber]->size + 1) * sizeof(long));
+    *(wayList[wayNumber]->nodes + wayList[wayNumber]->size) = nodeId;
+    wayList[wayNumber]->size += 1;
+    return 0;
+}
