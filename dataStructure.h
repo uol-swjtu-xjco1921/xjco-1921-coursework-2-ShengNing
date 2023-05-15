@@ -1,19 +1,23 @@
 #ifndef XJCO_1921_COURSEWORK_2_SHENGNING_DATASTRUCTURE_H
 #define XJCO_1921_COURSEWORK_2_SHENGNING_DATASTRUCTURE_H
 
+#define maxPOILength 15
+#define maxAttNameLength 15
+#define attributeLimit 15
+
 struct link
 {
     long id;
     long node1, node2;
     long way;
-    double length, veg, arch, land, speedLimit;
+    double length, speedLimit;
     
     int attributeCount;
-    char attributeName[15][20];
-    double attribute[15];
+    char attributeName[attributeLimit][maxAttNameLength];
+    double attribute[attributeLimit];
     
     int totalPOI;
-    char POI[10][100];
+    char POI[attributeLimit][maxPOILength];
 };
 
 struct node
@@ -54,7 +58,5 @@ struct bound
     double minLat, maxLat, minLon, maxLon;
 };
 
-#define maxPOILength 100
-#define maxAttNameLength 20
 
 #endif //XJCO_1921_COURSEWORK_2_SHENGNING_DATASTRUCTURE_H
