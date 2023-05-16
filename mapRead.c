@@ -371,6 +371,9 @@ int readNode(char *inputStr, struct node *tmpNode)
             }
             ++ tmpStr;
             tmpNode->lat = strtod(tmpStr, NULL);
+            
+            if (tmpNode->lat > 90 || tmpNode->lat < - 90)
+                return EXIT_Bad_Data;
         }
         
         else if (memcmp(divStr, "lon", 3) == 0)
@@ -383,6 +386,8 @@ int readNode(char *inputStr, struct node *tmpNode)
             }
             ++ tmpStr;
             tmpNode->lon = strtod(tmpStr, NULL);
+            if (tmpNode->lon > 90 || tmpNode->lon < - 90)
+                return EXIT_Bad_Data;
         }
         
         divStr = strtok(NULL, " ");
