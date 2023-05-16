@@ -40,12 +40,13 @@ int main(int argc, char **argv)
     {
         char input[100];
         long value = - 1;
-        while (value > 2 || value < 0)
+        while (value > 3 || value < 0)
         {
             system("clear");
             printf("Enter the number to select the function.\n");
-            printf("1. Query the path between two points\n");
-            printf("2. Edit the map\n");
+            printf("1. Query the path between two points.\n");
+            printf("2. Edit the map.\n");
+            printf("3. Rewrite the map.\n");
             printf("0. Exit.\n");
             scanf("%s", input);
             value = strtol(input, NULL, 10);
@@ -56,7 +57,7 @@ int main(int argc, char **argv)
             while (value > 1 || value < 0)
             {
                 system("clear");
-                printf("Exit?.\n");
+                printf("Exit?\n");
                 printf("0. Back.\n");
                 printf("1. Exit.\n");
                 scanf("%s", input);
@@ -96,8 +97,8 @@ int main(int argc, char **argv)
             {
                 system("clear");
                 printf("Whether pass assigned POI?\n");
-                printf("1.Yes.\n");
-                printf("2.NO.\n");
+                printf("1. Yes.\n");
+                printf("2. NO.\n");
                 scanf("%s", input);
                 opt = (int) strtol(input, NULL, 10);
             }
@@ -145,9 +146,9 @@ int main(int argc, char **argv)
             {
                 system("clear");
                 printf("Edit the map.\n");
-                printf("1.Edit the route attribute.\n");
-                printf("2.Add a route attribute.\n");
-                printf("0.Back.\n");
+                printf("1. Edit the route attribute.\n");
+                printf("2. Add a route attribute.\n");
+                printf("0. Back.\n");
                 scanf("%s", input);
                 isAdd = (int) strtol(input, NULL, 10);
             }
@@ -168,7 +169,7 @@ int main(int argc, char **argv)
                 scanf("%s", input);
                 tmpLink->node2 = strtol(input, NULL, 10);
                 
-                printf("Enter the SpeedLimit of link.\n");
+                printf("Enter the speedLimit of link.\n");
                 scanf("%s", input);
                 tmpLink->speedLimit = strtod(input, NULL);
                 
@@ -179,6 +180,13 @@ int main(int argc, char **argv)
                 printf("Enter the length of link.\n");
                 scanf("%s", input);
                 tmpLink->length = strtod(input, NULL);
+                
+                while(tmpLink->length<=0)
+                {
+                    printf("The length of link should > 0.\n");
+                    scanf("%s", input);
+                    tmpLink->length = strtod(input, NULL);
+                }
                 
                 printf("Enter the numbers of attributes.\n");
                 scanf("%s", input);
@@ -234,8 +242,8 @@ int main(int argc, char **argv)
                 qsort(linkList, countList.links, sizeof(linkList[0]), cmpLink);
                 
                 int tmpValue = 0;
-                wayPending(&wayList, &countList, tmpLink->node1, tmpLink->id);
-                tmpValue = wayPending(&wayList, &countList, tmpLink->node2, tmpLink->id);
+                wayPending(wayList, &countList, tmpLink->node1, tmpLink->way);
+                tmpValue = wayPending(wayList, &countList, tmpLink->node2, tmpLink->way);
                 
                 if (tmpValue == 0)
                 {
@@ -246,6 +254,11 @@ int main(int argc, char **argv)
                     countList.edges += 2;
                     
                 }
+                
+                system("clear");
+                printf("-------------Finished-------------\n");
+    
+                printf("The link:\n");
                 showLink(tmpLink);
                 printf("Type any to continue.");
                 scanf("%s", input);
@@ -279,6 +292,7 @@ int main(int argc, char **argv)
                     continue;
                 }
                 
+                system("clear");
                 printf("-------------Finished-------------\n");
                 
                 printf("Edited link:\n");
@@ -287,6 +301,16 @@ int main(int argc, char **argv)
                 printf("Type any to continue.");
                 scanf("%s", input);
             }
+        }
+        
+        if (value == 3)
+        {
+            writeFile("out.txt", linkList, nodeList, wayList, geomList, countList, boundData);
+            
+            printf("-------------Finished-------------\n");
+            
+            printf("Type any to continue.");
+            scanf("%s", input);
         }
     }
     freeData(&linkList, &nodeList, &wayList, &geomList, &edgeList, &head);

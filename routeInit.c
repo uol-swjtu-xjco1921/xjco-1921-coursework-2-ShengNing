@@ -136,6 +136,7 @@ void initSpeed(struct link **linkList, struct count *countList)
     for (int i = 0; i < (countList->links); ++ i)
     {
         // speedLimit is initially set as 60.0 km/h.
+        if((*linkList + i)->speedLimit) continue;
         (*linkList + i)->speedLimit = 60.0;
     }
 }

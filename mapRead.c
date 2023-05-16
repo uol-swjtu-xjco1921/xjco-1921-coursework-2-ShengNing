@@ -208,6 +208,7 @@ int readLink(char *inputStr, struct link *tmpLink)
     tmpLink->totalPOI = 0;
     tmpLink->attributeCount = 0;
     tmpLink->node1 = 10000000000;
+    tmpLink->speedLimit = 0;
     
     char *divStr;
     divStr = strtok(inputStr, " ");
@@ -264,6 +265,23 @@ int readLink(char *inputStr, struct link *tmpLink)
             }
             ++ tmpStr;
             tmpLink->length = strtod(tmpStr, NULL);
+            if (tmpLink->length <= 0)
+                return EXIT_Bad_Data;
+        }
+        
+        else if (memcmp(divStr, "speedLimit", 10) == 0)
+        {
+            char *tmpStr;
+            tmpStr = memchr(divStr, '=', strlen(divStr));
+            if (tmpStr == NULL)
+            {
+                return EXIT_Bad_Data;
+            }
+            ++ tmpStr;
+            tmpLink->speedLimit = strtod(tmpStr, NULL);
+            
+            if (tmpLink->speedLimit <= 0)
+                return EXIT_Bad_Data;
         }
         
         else if (memcmp(divStr, "POI", 3) == 0)
@@ -456,12 +474,12 @@ int readGeom(char *inputStr, struct geom *tmpGeom)
     return EXIT_NO_ERRORS;
 }
 
-int wayPending(struct way **wayList, struct count *countList, long nodeId, long linkId)
+int wayPending(struct way *wayList, struct count *countList, long nodeId, long wayId)
 {
-    int wayNumber = findWayOrGeomIndex(wayIndexUnion, countList->ways, linkId);
+    int wayNumber = findWayOrGeomIndex(wayIndexUnion, countList->ways, wayId);
     if (wayNumber == - 1) return - 1;
-    wayList[wayNumber]->nodes = realloc(wayList[wayNumber]->nodes, (wayList[wayNumber]->size + 1) * sizeof(long));
-    *(wayList[wayNumber]->nodes + wayList[wayNumber]->size) = nodeId;
-    wayList[wayNumber]->size += 1;
+    wayList[wayNumber].nodes = realloc(wayList[wayNumber].nodes, (wayList[wayNumber].size + 1) * sizeof(long));
+    wayList[wayNumber].nodes[wayList[wayNumber].size] = nodeId;
+    wayList[wayNumber].size += 1;
     return 0;
 }
