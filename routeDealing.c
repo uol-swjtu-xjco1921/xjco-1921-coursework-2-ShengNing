@@ -71,7 +71,7 @@ int main(int argc, char **argv)
             long startNode, endNode;
             double shortestDis = 0;
             int *pastNodes = NULL, nodeCount = 0;
-            char *POI = NULL;
+            char POI[maxPOILength];
             system("clear");
             
             printf("Enter the id of first node.\n");
@@ -109,7 +109,10 @@ int main(int argc, char **argv)
                     system("clear");
                     printf("Enter the POI.\n");
                     scanf("%s", input);
-                    POI = input;
+                    for (int i = 0; i < strlen(input); ++ i)
+                    {
+                        POI[i] = input[i];
+                    }
     
                     int flagPOI = 0;
                     for (int i = 0; i < countList.links; ++ i)
