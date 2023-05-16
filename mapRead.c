@@ -299,7 +299,7 @@ int readLink(char *inputStr, struct link *tmpLink)
                     if (poiStr[0] == ';') break;
                     if (strlen(poiStr) > maxPOILength)
                     {
-                        return EXIT_Bad_Data;
+                        return EXIT_TOO_LONG_POI;
                     }
                     if (tmpLink->totalPOI >= attributeLimit)
                         return EXIT_POI_LIMIT;
@@ -327,12 +327,16 @@ int readLink(char *inputStr, struct link *tmpLink)
             
             if (strlen(divStr) - strlen((tmpStr)) - 1 > maxAttNameLength)
             {
-                return EXIT_Bad_Data;
+                return EXIT_TOO_LONG_ATT;
             }
             
             for (int i = 0; i < strlen(divStr) - strlen((tmpStr)) - 1; ++ i)
                 tmpLink->attributeName[tmpLink->attributeCount - 1][i] = divStr[i];
             tmpLink->attribute[tmpLink->attributeCount - 1] = strtod(tmpStr, NULL);
+            
+            for (int i = 0; i < tmpLink->attributeCount - 1; ++ i)
+                if (strcmp(tmpLink->attributeName[tmpLink->attributeCount - 1], tmpLink->attributeName[i]) == 0)
+                    return EXIT_REPEAT_ATTRIBUTE;
         }
         
         divStr = strtok(NULL, " ");
@@ -386,6 +390,7 @@ int readNode(char *inputStr, struct node *tmpNode)
             }
             ++ tmpStr;
             tmpNode->lon = strtod(tmpStr, NULL);
+            
             if (tmpNode->lon > 90 || tmpNode->lon < - 90)
                 return EXIT_Bad_Data;
         }
