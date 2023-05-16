@@ -104,11 +104,37 @@ int main(int argc, char **argv)
             }
             if (opt == 1)
             {
-                printf("Enter the POI.\n");
-                scanf("%s", input);
-                POI = input;
+                while(1)
+                {
+                    system("clear");
+                    printf("Enter the POI.\n");
+                    scanf("%s", input);
+                    POI = input;
+    
+                    int flagPOI = 0;
+                    for (int i = 0; i < countList.links; ++ i)
+                    {
+                        if (linkList[i].totalPOI == 0) continue;
+        
+                        for (int j = 0; j < linkList[i].totalPOI; ++ j)
+                        {
+                            if (strcmp(POI, linkList[i].POI[j]) == 0)
+                            {
+                                flagPOI = 1;
+                                break;
+                            }
+                        }
+                        if (flagPOI) break;
+                    }
+                    if (! flagPOI)
+                    {
+                        printf("POI not exist.\n");
+                        printf("Type any to continue.");
+                        scanf("%s", input);
+                    }
+                    else break;
+                }
             }
-            
             isSpeed = (isSpeed == 2);
             routeInit(&linkList, &nodeList, &edgeList, &head, &countList, isSpeed);
             
@@ -180,7 +206,7 @@ int main(int argc, char **argv)
                 scanf("%s", input);
                 tmpLink->length = strtod(input, NULL);
                 
-                while(tmpLink->length<=0)
+                while (tmpLink->length <= 0)
                 {
                     printf("The length of link should > 0.\n");
                     scanf("%s", input);
@@ -256,7 +282,7 @@ int main(int argc, char **argv)
                 
                 system("clear");
                 printf("-------------Finished-------------\n");
-    
+                
                 printf("The link:\n");
                 showLink(tmpLink);
                 printf("Type any to continue.");
