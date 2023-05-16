@@ -78,8 +78,7 @@ void search(struct link *linkList, struct edge *edgeList, const int *head, int *
         {
             for (int j = 0; j < linkList[edgeList[i].index].totalPOI; ++ j)
             {
-                if (strlen(POI) != strlen(linkList[edgeList[i].index].POI[j])) continue;
-                if (memcmp(linkList[edgeList[i].index].POI[j], POI, strlen(POI)) == 0)
+                if (strcmp(linkList[edgeList[i].index].POI[j], POI) == 0)
                 {
                     flag = 1;
                     break;
@@ -103,7 +102,7 @@ void search(struct link *linkList, struct edge *edgeList, const int *head, int *
             visitNode[edgeList[i].to] = 1;
             pastNodes[nodeCount] = edgeList[i].to;
             search(linkList, edgeList, head, pastNodes, nodeCount + 1,
-                   nowDis + edgeList[i].length, edgeList[i].to, endNumber, POI, 1);
+                   nowDis + edgeList[i].length, edgeList[i].to, endNumber, POI, flag);
             visitNode[edgeList[i].to] = 0;
         }
     }
