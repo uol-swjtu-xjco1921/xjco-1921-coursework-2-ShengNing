@@ -91,6 +91,14 @@ int editAttribute(struct link *linkList, int index)
         printf("Enter the SpeedLimit you want to edit.\n");
         scanf("%s", input);
         linkList[index].speedLimit = strtod(input, NULL);
+        
+        while(linkList[index].speedLimit<=0)
+        {
+            printf("The speedLimit of link should > 0.\n");
+            scanf("%s", input);
+            linkList[index].speedLimit = strtod(input, NULL);
+        }
+        
         return EXIT_NO_ERRORS;
     }
     

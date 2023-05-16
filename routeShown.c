@@ -163,7 +163,7 @@ void showLink(struct link *tmpLink)
     printf("node: %ld, node: %ld\n", tmpLink->node1, tmpLink->node2);
     printf("way: %ld\n", tmpLink->way);
     printf("length: %lf\n", tmpLink->length);
-    printf("SpeedLimit: %lf(KM/H)\n", tmpLink->speedLimit);
+    printf("speedLimit: %lf(KM/H)\n", tmpLink->speedLimit);
     
     for (int i = 0; i < tmpLink->attributeCount; ++ i)
         printf("%s: %lf\n", tmpLink->attributeName[i], tmpLink->attribute[i]);
@@ -175,4 +175,69 @@ void showLink(struct link *tmpLink)
         if (i < tmpLink->totalPOI - 1) printf(",");
     }
     printf(";\n");
+}
+
+void
+writeFile(char *filename, struct link *linkList, struct node *nodeList, struct way *wayList, struct geom *geomList,
+          struct count countList, struct bound boundData)
+{
+    FILE *inputFile = fopen(filename, "w");
+    fprintf(inputFile, "<bounding minLat=%lf minLon=%lf maxLat=%lf maxLon=%lf /bounding>\n", boundData.minLat,
+            boundData.minLon, boundData.maxLat, boundData.maxLon);
+    
+    for (int i = 0; i < countList.links; ++ i)
+    {
+        fprintf(inputFile, "<link ");
+        fprintf(inputFile, "id=%ld ", linkList[i].id);
+        fprintf(inputFile, "node=%ld node=%ld ", linkList[i].node1, linkList[i].node2);
+        fprintf(inputFile, "way=%ld ", linkList[i].way);
+        fprintf(inputFile, "length=%lf ", linkList[i].length);
+        fprintf(inputFile, "SpeedLimit=%lf ", linkList[i].speedLimit);
+        
+        for (int j = 0; j < linkList[i].attributeCount; ++ j)
+            fprintf(inputFile, "%s=%lf ", linkList[i].attributeName[j], linkList[i].attribute[j]);
+        fprintf(inputFile, "POI:");
+        for (int j = 0; j < linkList[i].totalPOI; ++ j)
+        {
+            fprintf(inputFile, "%s", linkList[i].POI[j]);
+            fprintf(inputFile, ",");
+        }
+        fprintf(inputFile, ";/link>\n");
+    }
+    
+    for (int i = 0; i < countList.nodes; ++ i)
+    {
+        fprintf(inputFile, "<node ");
+        fprintf(inputFile, "id=%ld ", nodeList[i].id);
+        fprintf(inputFile, "lat=%lf lon:=%lf ", nodeList[i].lat, nodeList[i].lon);
+        fprintf(inputFile, "/node>\n");
+    }
+    
+    for (int i = 0; i < countList.ways; ++ i)
+    {
+        fprintf(inputFile, "<ways ");
+
+        fprintf(inputFile, "id=%ld ", wayList[i].id);
+        for (int j = 0; j < wayList[i].size; ++ j)
+        {
+            fprintf(inputFile, "node=%ld ", wayList[i].nodes[j]);
+        }
+
+        fprintf(inputFile, "/way>\n");
+    }
+
+    for (int i = 0; i < countList.geoms; ++ i)
+    {
+        fprintf(inputFile, "<geom ");
+
+        fprintf(inputFile, "id=%ld ", geomList[i].id);
+        for (int j = 0; j < geomList[i].size; ++ j)
+        {
+            fprintf(inputFile, "node=%ld ", geomList[i].nodes[j]);
+        }
+
+        fprintf(inputFile, "/geom>\n");
+    }
+    
+    fclose(inputFile);
 }

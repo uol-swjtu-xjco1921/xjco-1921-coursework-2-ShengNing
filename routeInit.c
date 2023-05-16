@@ -4,6 +4,7 @@ int cmpLink(const void *a, const void *b)
 {
     struct link c = *(struct link *) a;
     struct link d = *(struct link *) b;
+    if(c.id == d.id) return 0;
     return c.id > d.id;
 }
 
@@ -11,6 +12,7 @@ int cmpNode(const void *a, const void *b)
 {
     struct node c = *(struct node *) a;
     struct node d = *(struct node *) b;
+    if(c.id == d.id) return 0;
     return c.id > d.id;
 }
 
@@ -62,7 +64,7 @@ int detectData(struct bound *boundData, struct link **linkList, struct node **no
     // verify node
     for (int i = 0; i < (countList->nodes); ++ i)
     {
-        if (i + 1 < (countList->ways))
+        if (i + 1 < (countList->nodes))
             if ((*nodeList + i)->id == (*nodeList + i + 1)->id)
                 return EXIT_REPEAT_ID;
     }
@@ -136,6 +138,7 @@ void initSpeed(struct link **linkList, struct count *countList)
     for (int i = 0; i < (countList->links); ++ i)
     {
         // speedLimit is initially set as 60.0 km/h.
+        if((*linkList + i)->speedLimit) continue;
         (*linkList + i)->speedLimit = 60.0;
     }
 }

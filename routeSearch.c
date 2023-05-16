@@ -21,7 +21,7 @@ int dijkstra(struct link *linkList, struct edge *edgeList, const int *head, stru
              struct node **nodeList, long startNode, long endNode, const char *POI, double *shortestDis)
 {
     ansNodes = (int *) realloc(ansNodes, 0 * sizeof(int));
-    
+
     int startNumber = findNodeIndex(*nodeList, countList->nodes, startNode),
             endNumber = findNodeIndex(*nodeList, countList->nodes, endNode);
     if (startNumber == - 1 || endNumber == - 1)
@@ -29,15 +29,15 @@ int dijkstra(struct link *linkList, struct edge *edgeList, const int *head, stru
         return EXIT_UNKNOWN_NODE;
     }
     initSearch(countList->nodes + 1);
-    
+
     dis[startNumber] = 0;
     int *pastList = malloc(countList->nodes * sizeof(int));
     pastList[0] = startNumber;
     visitNode[0] = 1;
+    int flag = (POI == NULL);
     
-    int flag = (POI != NULL);
     search(linkList, edgeList, head, pastList, 1, 0, startNumber, endNumber, POI, flag);
-    
+
     if (ansNodes == NULL)
     {
         free(visitNode);
@@ -45,11 +45,11 @@ int dijkstra(struct link *linkList, struct edge *edgeList, const int *head, stru
         free(pastList);
         return EXIT_UNAPPROACHABLE_NODES_PAIR;
     }
-    
+
     *pastNodes = ansNodes;
     *nodeCount = ansCount;
     *shortestDis = dis[endNumber];
-    
+
     free(visitNode);
     free(dis);
     free(pastList);
@@ -96,6 +96,7 @@ void search(struct link *linkList, struct edge *edgeList, const int *head, int *
                    POI, flag);
             visitNode[edgeList[i].to] = 0;
         }
+        
         else
         {
             pastNodes[nodeCount] = nowNode;

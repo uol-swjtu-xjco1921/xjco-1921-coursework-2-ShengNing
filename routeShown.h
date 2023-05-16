@@ -20,3 +20,7 @@ int routeShown(struct bound *boundList, struct link *linkList, struct node *node
                struct geom *geomList, struct count *countList, int *pastNode, int nodeCount);
 
 void showLink(struct link *tmpLink);
+
+void
+writeFile(char *filename, struct link *linkList, struct node *nodeList, struct way *wayList, struct geom *geomList,
+          struct count countList, struct bound boundData);
