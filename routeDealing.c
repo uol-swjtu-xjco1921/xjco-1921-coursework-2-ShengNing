@@ -109,8 +109,7 @@ int main(int argc, char **argv)
                 POI = input;
             }
             
-            
-            isSpeed = isSpeed == 2;
+            isSpeed = (isSpeed == 2);
             routeInit(&linkList, &nodeList, &edgeList, &head, &countList, isSpeed);
             
             returnValue = dijkstra(linkList, edgeList, head, &countList, &pastNodes, &nodeCount, &nodeList, startNode,
@@ -314,6 +313,5 @@ int main(int argc, char **argv)
         }
     }
     freeData(&linkList, &nodeList, &wayList, &geomList, &edgeList, &head);
-    
     return 0;
 }
