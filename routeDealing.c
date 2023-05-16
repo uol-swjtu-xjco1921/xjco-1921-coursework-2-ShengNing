@@ -305,7 +305,7 @@ int main(int argc, char **argv)
         
         if (value == 3)
         {
-            writeFile("out.txt", linkList, nodeList, wayList, geomList, countList, boundData);
+            writeFile(argv[1], linkList, nodeList, wayList, geomList, countList, boundData);
             
             printf("-------------Finished-------------\n");
             
